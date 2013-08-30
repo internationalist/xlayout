@@ -1,0 +1,107 @@
+.hlayout {
+    margin-left:5px;
+}
+
+.title {
+	margin-left:50%;
+}
+body {
+
+}
+
+.hlayout_north {
+	width:100%;
+	padding:0;
+}
+
+.hlayout_center {
+	width:100%;
+	padding:0;
+	margin:0;
+}
+
+.hlayout_south {
+	width:100%;
+	padding:0;
+}
+
+.vlayout_west {
+	height:100%;
+	float:left;
+	padding:0;
+}
+
+.vlayout_east {
+	height:100%;
+	float:left;
+	padding:0;
+}
+.horizontal {
+	background: url("../images/handle-h.png") no-repeat scroll 50% 3px transparent;
+ 	cursor: row-resize;
+    height: 10px;
+    left: 0;
+	top: 0;
+    width: 100%;
+    background-color:#4775FF;
+}
+
+.vertical {
+    background: url("../images/handle-v.png") no-repeat scroll 3px 50% transparent;
+    cursor: col-resize;
+    height: 100%;
+    width: 8px;
+	float:left;
+	background-color:#4775FF;	
+}
+
+.vlayout_center {
+	height:100%;
+	float:left;
+	padding:0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    width: auto\9; /* ie8 */
+}        
+
+#dragme_v {
+	width:8px;
+	position:absolute;
+	top:50px;
+	left:500px;
+	border: 1px solid grey;
+	display:none;
+	z-index:1000;
+}
+
+#dragme_h {
+    height: 8px;
+	position:absolute;
+	top:50px;
+	left:500px;
+	border: 1px solid grey;
+	display:none;
+	z-index:1000;	
+}
+
+.blank {}
+
+.noborder {
+	border:0px green; !important
+	overflow:none !important
+}
+
+.border {
+	 border:5px solid indigo;
+	 overflow:auto;
+	 margin:5px;
+	 padding:5px;
+ }
+
+.break {
+	border:1px solid black;
+	overflow:auto;
+}
