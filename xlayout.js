@@ -1,4 +1,5 @@
 var configParam = null;
+var windowMode = 'subset';
 
 function ConfigParam() {
 	this.initParam = {
@@ -65,8 +66,9 @@ function viewport(container, mode){
 	}
 }
 
+//This get called once only from the client html page!!
 function init(container, mode, param) {
-	//TODO: Merge the passed config object with the default config object
+	windowMode=mode;
 	configParam = new ConfigParam();
 	if(param) {
 		configParam.resolve(param);
@@ -77,10 +79,12 @@ function init(container, mode, param) {
 	//get the container element
 	var containerElement = getChild(document.body, container);
 	//pack
-	pack(containerElement, viewport(containerElement, mode));
+	pack(containerElement, viewport(containerElement, windowMode));
 	
 	//pack the layout if the window is resized.
-	window.onresize=function() { pack(containerElement, viewport(containerElement, mode));}
+	if(windowMode=="window") {
+		window.onresize=function() { pack(containerElement, viewport(containerElement, windowMode));}
+	}
 	
 	var vshadow = document.createElement("div");
 	vshadow.id="dragme_v";
@@ -607,81 +611,85 @@ function MouseDragMonitor() {
 				this.dragme_v.style.display='none';				
 				mouseX = e.clientX;
 				delta = mouseX - this.originalMouseAxePos;//check the delta
-				divSizes = calculateSiblingDivSizes(this.originaPrevDivSize, this.originalNextDivSize, delta);
-				this.flag = 0;
-				//collapse the section if width becomes 0
-				var collapsedDiv = collapseSection(this.prevNode, this.nextNode, divSizes);
-				if(collapsedDiv) {
-					if(collapsedDiv.action=="hide") {
-						if(collapsedDiv.nodeType=="next") {
-							var style = window.getComputedStyle(this.nextNode,null);
-							config = calculateBorderMarginPaddingSize(style, "nextNode");
-							divSizes.prevDiv = divSizes.prevDiv + config["nextNode_border"];
-						} else if(collapsedDiv.nodeType=="previous") {
-							var style = window.getComputedStyle(this.prevNode,null);
-							config = calculateBorderMarginPaddingSize(style, "prevNode");							
-							divSizes.nextDiv = divSizes.nextDiv + config["prevNode_border"];	
-						}
-					} else if(collapsedDiv.action=="show") {
-						if(collapsedDiv.nodeType=="next") {
-							var style = window.getComputedStyle(this.nextNode,null);
-							config = calculateBorderMarginPaddingSize(style, "nextNode");
-							divSizes.prevDiv = divSizes.prevDiv - config["nextNode_border"];
-						} else if(collapsedDiv.nodeType=="previous") {
-							var style = window.getComputedStyle(this.prevNode,null);
-							config = calculateBorderMarginPaddingSize(style, "prevNode");							
-							divSizes.nextDiv = divSizes.nextDiv - config["prevNode_border"];	
+				if(delta != 0) {//if the mousemove is not significant then do nothing.
+					divSizes = calculateSiblingDivSizes(this.originaPrevDivSize, this.originalNextDivSize, delta);
+					this.flag = 0;
+					//collapse the section if width becomes 0
+					var collapsedDiv = collapseSection(this.prevNode, this.nextNode, divSizes);
+					if(collapsedDiv) {
+						if(collapsedDiv.action=="hide") {
+							if(collapsedDiv.nodeType=="next") {
+								var style = window.getComputedStyle(this.nextNode,null);
+								config = calculateBorderMarginPaddingSize(style, "nextNode");
+								divSizes.prevDiv = divSizes.prevDiv + config["nextNode_border"];
+							} else if(collapsedDiv.nodeType=="previous") {
+								var style = window.getComputedStyle(this.prevNode,null);
+								config = calculateBorderMarginPaddingSize(style, "prevNode");							
+								divSizes.nextDiv = divSizes.nextDiv + config["prevNode_border"];	
+							}
+						} else if(collapsedDiv.action=="show") {
+							if(collapsedDiv.nodeType=="next") {
+								var style = window.getComputedStyle(this.nextNode,null);
+								config = calculateBorderMarginPaddingSize(style, "nextNode");
+								divSizes.prevDiv = divSizes.prevDiv - config["nextNode_border"];
+							} else if(collapsedDiv.nodeType=="previous") {
+								var style = window.getComputedStyle(this.prevNode,null);
+								config = calculateBorderMarginPaddingSize(style, "prevNode");							
+								divSizes.nextDiv = divSizes.nextDiv - config["prevNode_border"];	
+							}
 						}
 					}
+					this.nextNode.style.width=divSizes.nextDiv + "px";
+					this.prevNode.style.width=divSizes.prevDiv + "px";				
+					console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
+					var nextheight = parseSize(this.nextNode.style.height);
+					var prevheight = parseSize(this.prevNode.style.height);				
+					//pack the elements
+					pack(this.nextNode, {width:divSizes.nextDiv, height:nextheight});
+					pack(this.prevNode, {width:divSizes.prevDiv, height:prevheight});
 				}
-				this.nextNode.style.width=divSizes.nextDiv + "px";
-				this.prevNode.style.width=divSizes.prevDiv + "px";				
-				console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
-				var nextheight = parseSize(this.nextNode.style.height);
-				var prevheight = parseSize(this.prevNode.style.height);				
-				//pack the elements
-				pack(this.nextNode, {width:divSizes.nextDiv, height:nextheight});
-				pack(this.prevNode, {width:divSizes.prevDiv, height:prevheight});
 			} else if(this.flag==1 && this.target.className=="horizontal") {
 				this.flag=0;				
 				this.dragme_h.style.display='none';					
 				mouseY = e.clientY;
 				delta = mouseY - this.originalMouseAxePos;//check the delta
-				divSizes = calculateSiblingDivSizes(this.originaPrevDivSize, this.originalNextDivSize, delta);
-				this.flag = 0;
-				//collapse the section if height becomes 0
-				var collapsedDiv = collapseSection(this.prevNode, this.nextNode, divSizes);
-				if(collapsedDiv) {
-					if(collapsedDiv.action=="hide") {
-						if(collapsedDiv.nodeType=="next") {
-							var style = window.getComputedStyle(this.nextNode,null);
-							config = calculateBorderMarginPaddingSize(style, "nextNode");
-							divSizes.prevDiv = divSizes.prevDiv + config["nextNode_border"];
-						} else if(collapsedDiv.nodeType=="previous") {
-							var style = window.getComputedStyle(this.prevNode,null);
-							config = calculateBorderMarginPaddingSize(style, "prevNode");							
-							divSizes.nextDiv = divSizes.nextDiv + config["prevNode_border"];	
+				if(delta != 0) {//if the mousemove is not significant then do nothing.				
+					divSizes = calculateSiblingDivSizes(this.originaPrevDivSize, this.originalNextDivSize, delta);
+					this.flag = 0;
+					//collapse the section if height becomes 0
+					var collapsedDiv = collapseSection(this.prevNode, this.nextNode, divSizes);
+					if(collapsedDiv) {
+						if(collapsedDiv.action=="hide") {
+							if(collapsedDiv.nodeType=="next") {
+								var style = window.getComputedStyle(this.nextNode,null);
+								config = calculateBorderMarginPaddingSize(style, "nextNode");
+								divSizes.prevDiv = divSizes.prevDiv + config["nextNode_border"];
+							} else if(collapsedDiv.nodeType=="previous") {
+								var style = window.getComputedStyle(this.prevNode,null);
+								config = calculateBorderMarginPaddingSize(style, "prevNode");							
+								divSizes.nextDiv = divSizes.nextDiv + config["prevNode_border"];	
+							}
+						} else if(collapsedDiv.action=="show") {
+							if(collapsedDiv.nodeType=="next") {
+								var style = window.getComputedStyle(this.nextNode,null);
+								config = calculateBorderMarginPaddingSize(style, "nextNode");
+								divSizes.prevDiv = divSizes.prevDiv - config["nextNode_border"];
+							} else if(collapsedDiv.nodeType=="previous") {
+								var style = window.getComputedStyle(this.prevNode,null);
+								config = calculateBorderMarginPaddingSize(style, "prevNode");							
+								divSizes.nextDiv = divSizes.nextDiv - config["prevNode_border"];	
+							}
 						}
-					} else if(collapsedDiv.action=="show") {
-						if(collapsedDiv.nodeType=="next") {
-							var style = window.getComputedStyle(this.nextNode,null);
-							config = calculateBorderMarginPaddingSize(style, "nextNode");
-							divSizes.prevDiv = divSizes.prevDiv - config["nextNode_border"];
-						} else if(collapsedDiv.nodeType=="previous") {
-							var style = window.getComputedStyle(this.prevNode,null);
-							config = calculateBorderMarginPaddingSize(style, "prevNode");							
-							divSizes.nextDiv = divSizes.nextDiv - config["prevNode_border"];	
-						}
-					}
-				}				
-				this.nextNode.style.height=divSizes.nextDiv + "px";
-				this.prevNode.style.height=divSizes.prevDiv + "px";				
-				console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
-				var nextwidth = parseSize(this.nextNode.style.width);
-				var prevwidth = parseSize(this.prevNode.style.width);
-				//pack the elements
-				pack(this.nextNode, {width:nextwidth, height:divSizes.nextDiv});
-				pack(this.prevNode, {width:prevwidth, height:divSizes.prevDiv})				
+					}				
+					this.nextNode.style.height=divSizes.nextDiv + "px";
+					this.prevNode.style.height=divSizes.prevDiv + "px";				
+					console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
+					var nextwidth = parseSize(this.nextNode.style.width);
+					var prevwidth = parseSize(this.prevNode.style.width);
+					//pack the elements
+					pack(this.nextNode, {width:nextwidth, height:divSizes.nextDiv});
+					pack(this.prevNode, {width:prevwidth, height:divSizes.prevDiv});
+				}
 			}
 		}, false);
 
