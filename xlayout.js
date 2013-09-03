@@ -1,5 +1,4 @@
 var configParam = null;
-var windowMode = 'subset';
 
 function ConfigParam() {
 	this.initParam = {
@@ -66,24 +65,34 @@ function viewport(container, mode){
 	}
 }
 
+function Xlayout(container, mode, param) {
+	
+	window.onload=function() {
+		if(container=='body') {
+			containerElement = document.body;
+		} else {
+			containerElement = getChildUsingIdOrClass(document.body, container);
+		}		
+		init(containerElement, mode, param);
+	}
+}
+
 //This get called once only from the client html page!!
-function init(container, mode, param) {
-	windowMode=mode;
+function init(containerElement, mode, param) {
 	configParam = new ConfigParam();
 	if(param) {
 		configParam.resolve(param);
 	}
 	//initialize mouse drag component.
 	var dragMonitor = new MouseDragMonitor();
-	
-	//get the container element
-	var containerElement = getChild(document.body, container);
+
 	//pack
-	pack(containerElement, viewport(containerElement, windowMode));
+	pack(containerElement, viewport(containerElement, mode));
 	
 	//pack the layout if the window is resized.
-	if(windowMode=="window") {
-		window.onresize=function() { pack(containerElement, viewport(containerElement, windowMode));}
+	if(mode=="window") {
+		nullifyBorderMarginAndPaddings(containerElement);
+		window.onresize=function() { pack(containerElement, viewport(containerElement, mode));}
 	}
 	
 	var vshadow = document.createElement("div");
@@ -351,6 +360,14 @@ function resetStylesIfContainer(element, elementClassName) {
 	}
 }
 
+function nullifyBorderMarginAndPaddings(containerElement) {
+	containerElement.style.border="0px";
+	containerElement.style.padding=0;
+	containerElement.style.margin=0;
+}
+
+
+
 function isContainer(element) {
 	if(getChild(element, "hlayout_center") || getChild(element, "vlayout_center")) {
 		return true;
@@ -387,12 +404,25 @@ function createHBarsBeforeElement(hlayoutPanel) {
 function getChild(element, className) {
 	//get all children of the element
 	var children = element.childNodes
-	var regex = new RegExp(className);
 	for(i=0;i<children.length;i++) {
 		if(children.item(i).className && (children.item(i).className.search(className) > -1)) {
 			return children.item(i);
 		}
 	}
+}
+
+function getChildUsingIdOrClass(element, identity) {
+	//get all children of the element
+	var children = element.childNodes
+	var child = null;
+	for(i=0;i<children.length;i++) {
+		if(children.item(i).className && (children.item(i).className.search(identity) > -1)) {
+			child = children.item(i);
+		} else if(children.item(i).id==identity) {
+			child = children.item(i);
+		}
+	}
+	return child;
 }
 
 function processBorders(element, config, orientation, className) {
@@ -718,6 +748,9 @@ function calculateBorderMarginPaddingSize(style, token) {
 function collapseSection(prevNode, nextNode, divSizes) {
 	var collapsedDiv = new Object();
 	if(divSizes.nextDiv==0) {
+		if(nextNode.style.display=="none") {//this is the case when someone is dragging to hide an already hidden div
+			return;
+		}
 		nextNode.style.display="none";
 		collapsedDiv.nodeType = "next";
 		collapsedDiv.action = "hide";
@@ -729,6 +762,9 @@ function collapseSection(prevNode, nextNode, divSizes) {
 		nextNode.style.display="block";
 	}
 	if(divSizes.prevDiv==0) {
+		if(prevNode.style.display=="none") {//this is the case when someone is dragging to hide an already hidden div
+			return;
+		}		
 		prevNode.style.display="none";
 		collapsedDiv.nodeType = "previous";
 		collapsedDiv.action = "hide";		
@@ -796,4 +832,13 @@ function stopDefault(e) {
     }
     return false;
 }
+
+/*** JQUERY PLUGIN CODE BELOW **/
+(function($) {
+	$.fn.xlayout = function(mode, param) {
+	    init($(this)[0], mode, param);
+	};
+})(jQuery);
+
+
 
