@@ -20,11 +20,18 @@ Download the folders js and style. The js contains the javascript file xlayout.j
        <h6>HTML</h6>
        <div>
       	&lt;div id="container"&gt;<br/>
-		      <span style="margin-left:15px;">&lt;div class="hlayout_north"&gt; Header &lt;/div&gt;</span><br/>
-		      <span style="margin-left:15px;">&lt;div class="hlayout_center"&gt;&lt;/div&gt;</span><br/>
-  		      <span style="margin-left:15px;">&lt;div class="hlayout_south"&gt; Footer &lt;/div&gt;</span><br/>
+		      <span>&lt;div class="hlayout_north"&gt; Header &lt;/div&gt;</span><br/>
+		      <span>&lt;div class="hlayout_center"&gt;Center&lt;/div&gt;</span><br/>
+  		      <span>&lt;div class="hlayout_south"&gt; Footer &lt;/div&gt;</span><br/>
   		    &lt;/div&gt;
   	</div>
+  	<h6>Javascript</h6>
+  	<div>
+  		&lt;script&gt; new Xlayout('container'); &lt;/script&gt;	
+  	</div>
+  	<p>This will give you a 3 panel vertical layout looking similar to this:<p>
+  	
+  	
   
   </div>
   </li>
