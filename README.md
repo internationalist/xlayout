@@ -29,7 +29,10 @@ Download the folders js and style. The js contains the javascript file xlayout.j
   	<div>
   		&lt;script&gt; new Xlayout('container'); &lt;/script&gt;	
   	</div>
-  	<p>This will give you a 3 panel vertical layout looking similar to this:<p>
+  	<p>This will give you a 3 panel vertical layout like <a href="http://i.imgur.com/IwKGkvP.jpg?1">this</a><p>
+  	
+  	<p>I am building a documentation web site that will have more detailed documentation and tutorials etc.</p>
+  	<p>Xlayout has considerable configuration and customization options that will be detailed on the site.</p>
   	
   	
   
