@@ -16,8 +16,8 @@ Download the folders js and style. The js contains the javascript file xlayout.j
       that are laid out in a cross pattern. This arrangement can be used to generate a complete border pattern
       of panels laid out in sections of north, center, south, west and east.
       Any number of nesting can be used to generate complex panel based layouts.
-      <h6>Example Usage</h6>
-       <h8>HTML</h8>
+      <h5>Example Usage</h5>
+       <h6>HTML</h6>
       	&lt;div id="container"&gt;
 		      &lt;div class="hlayout_north"&gt; <!--Header --> &lt;/div&gt;
 		      &lt;div class="hlayout_center"&gt;
