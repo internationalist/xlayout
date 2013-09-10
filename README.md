@@ -18,11 +18,13 @@ Download the folders js and style. The js contains the javascript file xlayout.j
       Any number of nesting can be used to generate complex panel based layouts.
       <h5>Example Usage</h5>
        <h6>HTML</h6>
-      	&lt;div id="container"&gt;
+       <div>
+      	&lt;div id="container"&gt;<br/>
 		      <span style="margin-left:15px;">&lt;div class="hlayout_north"&gt; Header &lt;/div&gt;</span><br/>
 		      <span style="margin-left:15px;">&lt;div class="hlayout_center"&gt;&lt;/div&gt;</span><br/>
   		      <span style="margin-left:15px;">&lt;div class="hlayout_south"&gt; Footer &lt;/div&gt;</span><br/>
   		    &lt;/div&gt;
+  	</div>
   
   </div>
   </li>
