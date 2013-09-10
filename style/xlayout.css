@@ -166,6 +166,10 @@ permanent authorization for you to choose that version for the
 Library.
 */
 
+body{
+margin:0;
+padding:0;
+}
 .hlayout_north {
 	width:100%;
 	padding:0;

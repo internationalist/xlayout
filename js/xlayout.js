@@ -229,7 +229,7 @@ function viewport(container, mode){
 	if(mode=="window") {
 		return { width : (e[ a+'Width' ]) , height : (e[ a+'Height' ])};
 	} else {
-		return {width:container.clientWidth, height:container.clientHeight}
+		return {width:container.scrollWidth, height:container.scrollHeight}
 	}
 }
 
@@ -1007,8 +1007,11 @@ function stopDefault(e) {
 }
 
 /*** JQUERY PLUGIN CODE BELOW **/
-(function($) {
+/*(function($) {
 	$.fn.xlayout = function(mode, param) {
 	    init($(this)[0], mode, param);
 	};
-})(jQuery);
+})(jQuery);*/
+
+
+
