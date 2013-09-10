@@ -177,7 +177,7 @@ function pack(rootElement, size) {
 				if(configParam.getConfig("resizebar", hlayout_north.id)) {
 					createHBarsBeforeElement(hlayout_center);
 					//then add resize bar width to borderWidths
-					borderWidths += 10;
+					borderWidths += 6;
 				}
 			}
 		}
@@ -207,7 +207,7 @@ function pack(rootElement, size) {
 				if(configParam.getConfig("resizebar", hlayout_south.id)) {
 					createHBarsBeforeElement(hlayout_south);
 					//then add resize bar width to borderWidths
-					borderWidths += 10;
+					borderWidths += 6;
 				}
 			}
 		}
@@ -286,7 +286,7 @@ function pack(rootElement, size) {
 				if(configParam.getConfig("resizebar", vlayout_west.id)) {				
 					createVBarsBeforeElement(vlayout_center);
 					//then add resize bar width to borderWidths
-					borderWidths += 8;
+					borderWidths += 6;
 				}
 			}
 			
@@ -315,7 +315,7 @@ function pack(rootElement, size) {
 				if(configParam.getConfig("resizebar", vlayout_east.id)) {				
 					createVBarsBeforeElement(vlayout_east);
 					//then add resize bar width to borderWidths
-					borderWidths += 8;
+					borderWidths += 6;
 				}
 			}
 		}
