@@ -1,4 +1,5 @@
-/*GNU LESSER GENERAL PUBLIC LICENSE
+/*
+GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
@@ -165,7 +166,6 @@ permanent authorization for you to choose that version for the
 Library.
 */
 
-
 var configParam = null;
 
 function ConfigParam() {
@@ -251,6 +251,11 @@ function init(containerElement, mode, param) {
 	if(param) {
 		configParam.resolve(param);
 	}
+	
+	if(mode==null) {
+		mode="window";
+	}
+	
 	//initialize mouse drag component.
 	var dragMonitor = new MouseDragMonitor();
 
@@ -1007,6 +1012,3 @@ function stopDefault(e) {
 	    init($(this)[0], mode, param);
 	};
 })(jQuery);
-
-
-
