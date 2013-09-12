@@ -235,14 +235,14 @@ function viewport(container, mode){
 
 function Xlayout(container, mode, param) {
 	
-	window.onload=function() {
+	//window.onload=function() {
 		if(container=='body') {
 			containerElement = document.body;
 		} else {
 			containerElement = getChildUsingIdOrClass(document.body, container);
 		}		
 		init(containerElement, mode, param);
-	}
+//	}
 }
 
 //This get called once only from the client html page!!
@@ -1012,6 +1012,3 @@ function stopDefault(e) {
 	    init($(this)[0], mode, param);
 	};
 })(jQuery);*/
-
-
-
