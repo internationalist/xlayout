@@ -39,8 +39,8 @@ Download the folders js and style. The js contains the javascript file xlayout.j
   	</div>
   	<p>This will give you a 3 panel vertical layout like <a href="http://i.imgur.com/IwKGkvP.jpg?1">this</a><p>
   	
-  	<p>Take a look at the couple of example html files that I have checked in.</p> <p>If you keep the js and the css files in the folders 'js' and 'style' and have the html files in the parent directory (exactly like it is in the repository) then the examples should work out of the box.</p>
-  	
+  	<p>Take a look at the example html files that I have checked in. The example <strong>complexlayout.html</strong> has 5 levels of nesting and also has styled panels.</p> <p>If you keep the js and the css files in the folders 'js' and 'style' and have the html files in the parent directory (exactly like it is in the repository) then the examples should work out of the box.</p>
+  	 
   	<p>I am building a documentation web site that will have more detailed documentation and tutorials etc.</p>
   	<p>Xlayout has considerable configuration and customization options that will be detailed on the site.</p>
   	
