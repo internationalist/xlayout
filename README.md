@@ -35,7 +35,7 @@ Download the folders js and style. The js contains the javascript file xlayout.j
   	</div>
   	<h6>Javascript</h6>
   	<div>
-  		&lt;script&gt; new Xlayout('container'); &lt;/script&gt;	
+  		&lt;script&gt; window.onload=function() {new Xlayout('container')}; &lt;/script&gt;	
   	</div>
   	<p>This will give you a 3 panel vertical layout like <a href="http://i.imgur.com/IwKGkvP.jpg?1">this</a><p>
   	
