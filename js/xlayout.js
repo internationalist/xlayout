@@ -200,6 +200,9 @@ function ConfigParam() {
 			}
 			if(temp.resizebar==null) {
 				temp.resizebar=this.initParam.default.resizebar;
+			}
+			if(temp.border==null) {
+				temp.border=this.initParam.default.border;
 			}			
 		} else {
 			defConfig.default=this.initParam.default;
