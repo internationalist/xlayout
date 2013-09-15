@@ -6,6 +6,12 @@ A Javascript and CSS based layout library for laying out divs in your HTML docum
 <h2>Installation<h2>
 ==============
 Download the folders js and style. The js contains the javascript file xlayout.js. The folder style contains the css file xlayout.css and a couple of images that help render the resize bars.
+<pre>
+	&lt;link rel="stylesheet" type="text/css" href="xlayout.css"/&gt;
+	&lt;script src="xlayout.js"&gt;&lt;/script&gt;
+</pre>
+
+Note: Above example assumes that you have placed the js file and the css in the same location as your html.
 
 <h2>Tutorial<h2>
 ==========
