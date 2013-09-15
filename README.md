@@ -26,36 +26,37 @@ Download the folders js and style. The js contains the javascript file xlayout.j
 	</ul>      
       <h5>Basic Usage</h5>
        <h6>HTML</h6>
-       <div>
-      	&lt;div id="container"&gt;<br/>
-		      <span>&lt;div class="hlayout_north"&gt; Header &lt;/div&gt;</span><br/>
-		      <span>&lt;div class="hlayout_center"&gt;Center&lt;/div&gt;</span><br/>
-  		      <span>&lt;div class="hlayout_south"&gt; Footer &lt;/div&gt;</span><br/>
-  		    &lt;/div&gt;
-  	</div>
+       <pre>
+	&lt;div id="container"&gt;
+		&lt;div class="hlayout_north"&gt; Header &lt;/div&gt;
+		&lt;div class="hlayout_center"&gt;Center&lt;/div&gt;
+  		&lt;div class="hlayout_south"&gt; Footer &lt;/div&gt;	
+	&lt;/div&gt;
+
+  	</pre>
   	<h6>Javascript</h6>
-  	<div>
-  		&lt;script&gt; window.onload=function() {new Xlayout('container')}; &lt;/script&gt;	
-  	</div>
+	<pre>  
+	window.onload=function() {new Xlayout('container')};	
+	</pre>
   	<p>This will give you a 3 panel vertical layout like <a href="http://i.imgur.com/IwKGkvP.jpg?1">this</a><p>
   	
   	<p> You can also programmatically hide and show header, footer west and east panels</p>
   	<p>To do this first assign an id value</p>
-        <div>
-      	&lt;div id="container"&gt;<br/>
-		      <span>&lt;div id="north" class="hlayout_north"&gt; Header &lt;/div&gt;</span><br/>
-		      <span>&lt;div class="hlayout_center"&gt;Center&lt;/div&gt;</span><br/>
-  		      <span>&lt;div class="hlayout_south"&gt; Footer &lt;/div&gt;</span><br/>
-  		    &lt;/div&gt;
-  	</div>
+
+        <pre>
+	&lt;div id="container"&gt;
+	      &lt;div id="north" class="hlayout_north"&gt; Header &lt;/div&gt;
+	      &lt;div class="hlayout_center"&gt;Center&lt;/div&gt;
+  	      &lt;div class="hlayout_south"&gt; Footer &lt;/div&gt;
+	&lt;/div&gt;
+  	</pre>
   	<p>The following javascript closes then opens</p>
   
-   	<div>
-  		&lt;script&gt; window.onload=function() {var layout = new Xlayout('container');<br>
-  			layout.hidePanel('north');<br>
-  			layout.showPanel('north');
-  		}; &lt;/script&gt;	
-  	</div>
+   	<pre>
+	window.onload=function() {var layout = new Xlayout('container');
+	layout.hidePanel('north');
+	layout.showPanel('north');
+  	</pre>
   	
   	
   	
