@@ -344,26 +344,21 @@ function pack(rootElement, size) {
 			resetStylesIfContainer(hlayout_north, "hlayout_north");
 			
 			hlayoutNorthHeight = Math.round(screenheight*(configParam.getConfig("northheight", hlayout_north.id)/100));
-			if(hlayoutNorthHeight <= 10) {
+			//compensate for border width if any
+			config.hlayout_north_xborder=0;
+			processBorders(hlayout_north, config, "vertical", "hlayout_north");
+			//adjust the width for borders
+			var northWidth = screenwidth - config.hlayout_north_xborder;
+			if(hlayoutNorthHeight <= 10 || northWidth <= 10) {
 				hlayout_north.style.display="none";
 			} else {
 				hlayout_north.style.display="block";
-				hlayout_north.style.height=hlayoutNorthHeight + "px"; //3% of total height
-				//compensate for border width if any
-				config.hlayout_north_xborder=0;
-				processBorders(hlayout_north, config, "vertical", "hlayout_north");
-				//adjust the width for borders
-				var northWidth = screenwidth - config.hlayout_north_xborder;
-				if(northWidth <= 10) {
-					hlayout_north.style.display="none";
-				} else {
-					hlayout_north.style.display="block";
-					hlayout_north.style.width=northWidth + "px";
-					if(config.hlayout_north_border) {
-						borderWidths += config.hlayout_north_border;
-					}					
-				}
+				if(config.hlayout_north_border) {
+					borderWidths += config.hlayout_north_border;
+				}				
 			}
+			hlayout_north.style.width=northWidth + "px";
+
 			//if resize bars are needed generate them
 			if(configParam.getConfig("resizebar", hlayout_north.id)) {
 				createHBarsBeforeElement(hlayout_center);
@@ -378,25 +373,19 @@ function pack(rootElement, size) {
 			resetStylesIfContainer(hlayout_north, "hlayout_south");
 			//hlayoutSouthHeight = Math.round((screenheight*params.southheight)/100); //4% of total height
 			hlayoutSouthHeight = Math.round(screenheight*(configParam.getConfig("southheight", hlayout_south.id)/100)); //4% of total height
-			if(hlayoutSouthHeight <= 20) {
+			processBorders(hlayout_south, config, "vertical", "hlayout_south");
+			//adjust the width for borders
+			var southWidth = screenwidth - config.hlayout_south_xborder;
+			if(hlayoutSouthHeight <= 20 || southWidth <= 10) {
 				hlayout_south.style.display="none";
 			} else {
 				hlayout_south.style.display="block";
-				hlayout_south.style.height=hlayoutSouthHeight + "px";			
-				processBorders(hlayout_south, config, "vertical", "hlayout_south");
-				//adjust the width for borders
-				var southWidth = screenwidth - config.hlayout_south_xborder;
-				if(southWidth <= 10) {
-					hlayout_south.style.display="none";
-				} else {
-					hlayout_south.style.display="block";
-					hlayout_south.style.width=southWidth + "px";
-					if(config.hlayout_south_border) {
-						borderWidths += config.hlayout_south_border;
-					}					
+				if(config.hlayout_south_border) {
+					borderWidths += config.hlayout_south_border;
 				}				
-				
 			}
+			hlayout_south.style.width=southWidth + "px";
+					
 			//if resize bars are needed generate them
 			if(configParam.getConfig("resizebar", hlayout_south.id)) {
 				createHBarsBeforeElement(hlayout_south);
@@ -412,15 +401,40 @@ function pack(rootElement, size) {
 		centerWidth = screenwidth - config.hlayout_center_xborder;
 		hlayout_center.style.width=centerWidth + "px";		
 		centerContainerHeight = screenheight - (hlayoutNorthHeight + hlayoutSouthHeight) - borderWidths - config.hlayout_center_border;
-		if(centerContainerHeight < 10 || centerWidth < 10) {
+
+
+		if(centerContainerHeight < 0) {
+			if(hlayoutNorthHeight > hlayoutSouthHeight) {
+				hlayoutNorthHeight += centerContainerHeight;
+			} else {
+				hlayoutSouthHeight += centerContainerHeight;
+			}
+			centerContainerHeight = 0;
+		}
+		//if center panel is closed.
+		//console.log("Center % is " + configParam.getConfig("centrewidth", hlayout_center.id));
+		var centerClosed = configParam.getConfig("centrewidth", hlayout_center.id) == 0;
+		if(centerClosed && centerContainerHeight > 0) {
+			hlayoutSouthHeight +=centerContainerHeight;
+		}
+
+		if(hlayout_north) {
+			hlayout_north.style.height=hlayoutNorthHeight + "px"; //3% of total height
+		}
+		if(hlayout_south) {
+			hlayout_south.style.height=hlayoutSouthHeight + "px";
+		}
+		
+		if(centerClosed ||(centerContainerHeight < 10 || centerWidth < 10)) {
 			hlayout_center.style.display="none";
 		} else{
 			hlayout_center.style.display="block";			
 			hlayout_center.style.height=centerContainerHeight + "px";
+			//recursive call
+			pack(hlayout_center, {width:centerWidth, height:centerContainerHeight});			
 		}
 			
-		//recursive call
-		pack(hlayout_center, {width:centerWidth, height:centerContainerHeight});
+
 
 		if(hlayout_north) {
 			pack(hlayout_north, {width:northWidth, height:hlayoutNorthHeight});			
@@ -453,25 +467,24 @@ function pack(rootElement, size) {
 			//reset the class name
 			resetStylesIfContainer(vlayout_west, "vlayout_west");			
 			topWestWidth = Math.round(screenwidth*(configParam.getConfig("westwidth", vlayout_west.id)/100));
-			if(topWestWidth <= 10) {
+/*			if(topWestWidth <= 10) {
 				vlayout_west.style.display="none";
 			} else {
-				vlayout_west.style.display="block";				
-				vlayout_west.style.width=topWestWidth + "px";			
-				processBorders(vlayout_west, config, "horizontal", "vlayout_west");
+				vlayout_west.style.display="block";
+			}*/
+			processBorders(vlayout_west, config, "horizontal", "vlayout_west");
 				//adjust the width for borders
-				var westHeight = screenheight - config.vlayout_west_xborder;
-				if(westHeight <= 10) {
-					vlayout_west.style.display="none";
-				} else {
-					vlayout_west.style.display="block";
-					vlayout_west.style.height=westHeight + "px";
-					if(config.vlayout_west_border) {
-						borderWidths += config.vlayout_west_border;
-					}					
-				}
-				
+			var westHeight = screenheight - config.vlayout_west_xborder;
+			if(topWestWidth <= 10 || westHeight <= 10) {
+				vlayout_west.style.display="none";
+			} else {
+				vlayout_west.style.display="block";
+				if(config.vlayout_west_border) {
+					borderWidths += config.vlayout_west_border;
+				}				
 			}
+
+			vlayout_west.style.height=westHeight + "px";
 			if(configParam.getConfig("resizebar", vlayout_west.id)) {				
 				createVBarsBeforeElement(vlayout_center);
 				//then add resize bar width to borderWidths
@@ -484,24 +497,24 @@ function pack(rootElement, size) {
 			resetStylesIfContainer(vlayout_east, "vlayout_east");			
 			topEastWidth = Math.round(screenwidth*(configParam.getConfig("eastwidth", vlayout_east.id)/100));			
 			
-			if(topEastWidth <= 10) {
+/*			if(topEastWidth <= 10) {
 				vlayout_east.style.display="none";
 			} else {
 				vlayout_east.style.display="block";
-				vlayout_east.style.width=topEastWidth + "px";
-				processBorders(vlayout_east, config, "horizontal", "vlayout_east");
+			}*/
+			processBorders(vlayout_east, config, "horizontal", "vlayout_east");
 				//adjust the width for borders
-				var eastHeight = screenheight - config.vlayout_east_xborder;
-				if(eastHeight <= 10) {
-					vlayout_east.style.display="none";
-				} else {
-					vlayout_east.style.display="block";
-					vlayout_east.style.height=eastHeight + "px";
-					if(config.vlayout_east_border) {
-						borderWidths += config.vlayout_east_border;
-					}					
+			var eastHeight = screenheight - config.vlayout_east_xborder;
+			if(topEastWidth <= 10 || eastHeight <= 10) {
+				vlayout_east.style.display="none";
+			} else {
+				vlayout_east.style.display="block";
+				if(config.vlayout_east_border) {
+					borderWidths += config.vlayout_east_border;
 				}				
 			}
+			vlayout_east.style.height=eastHeight + "px";
+					
 			if(configParam.getConfig("resizebar", vlayout_east.id)) {				
 				createVBarsBeforeElement(vlayout_east);
 				//then add resize bar width to borderWidths
@@ -513,8 +526,33 @@ function pack(rootElement, size) {
 		
 		processBorders(vlayout_center, config, "horizontal", "vlayout_center");			
 		topCenterWidth = screenwidth - (topWestWidth + topEastWidth) - borderWidths - config.vlayout_center_border;
+		
+		if(topCenterWidth < 0) {
+			if(topWestWidth > topEastWidth) {
+				topWestWidth += topCenterWidth;
+			} else {
+				topEastWidth += topCenterWidth;
+			}
+			topCenterWidth = 0;
+		}
+		
+		var centerClosed = configParam.getConfig("centrewidth", vlayout_center.id) == 0;
+/*		if(centerClosed && topCenterWidth > 0) {
+			topEastWidth +=topCenterWidth;
+		}*/
+		if(vlayout_west) {
+			//hlayout_north.style.height=compensatedValues.previous + "px"; //3% of total height
+			vlayout_west.style.width=topWestWidth + "px"; //3% of total height
+		}
+		if(vlayout_east) {
+			//hlayout_south.style.height=compensatedValues.next + "px";
+			vlayout_east.style.width=topEastWidth + "px";
+		}		
+		
+		
+		
 		var centerHeight = screenheight - config.vlayout_center_xborder;		
-		if(topCenterWidth <= 20 || centerHeight < 10) {
+		if(centerClosed || (topCenterWidth <= 20 || centerHeight < 10)) {
 			vlayout_center.style.display="none";
 		} else {
 			vlayout_center.style.display="block";			
@@ -534,6 +572,17 @@ function pack(rootElement, size) {
 		}		
 	}
 
+}
+
+function compensateOverflow(centerContainer, previousContainer, nextContainer) {
+	if(centerContainer < 0) {
+		if(previousContainer > nextContainer) {
+			previousContainer + centerContainer;
+		} else {
+			nextContainer + centerContainer;
+		}
+	}
+	return {center:centerContainer, previous:previousContainer, next:nextContainer}
 }
 
 function resetStylesIfContainer(element, elementClassName) {
@@ -838,23 +887,36 @@ function calculateBorderMarginPaddingSize(style, token) {
 function adjustVerticalPanelSize(nextNode, prevNode) {
 	nextNode.style.width=divSizes.nextDiv + "px";
 	prevNode.style.width=divSizes.prevDiv + "px";
-
+	var oldSize = null;
+	if(nextNode.id==null || nextNode.id==""){
+		nextNode.id="n1l4r" + (++idGen);
+	}
+	if(prevNode.id==null || prevNode.id=="") {
+		prevNode.id="n1l4r" + (++idGen);
+	}	
 	var base = null;
 	var percentVal = null;
+	var percentValCenter = null;
 	if(nextNode.className.search("vlayout_east") > -1) {
-		if(nextNode.id==null || nextNode.id==""){
-			nextNode.id="n1l4r" + (++idGen);
-		}		
+		
 		base = parseSize(nextNode.parentNode.style.width);
 		percentVal = Math.round(divSizes.nextDiv/base*100);
-		configParam.setConfig("eastwidth",  nextNode.id, percentVal);		
+		//preserve the original dimension for use when expanding this panel
+		oldSize = configParam.getConfig("eastwidth",  nextNode.id);
+		configParam.setConfig("eastwidth_orig",  nextNode.id, oldSize);
+		configParam.setConfig("eastwidth",  nextNode.id, percentVal);
+		percentValCenter = Math.round(divSizes.prevDiv/base*100);
+		configParam.setConfig("centrewidth",  prevNode.id, percentValCenter);		
+
 	} else if(prevNode.className.search("vlayout_west") > -1) {
-		if(prevNode.id==null || prevNode.id=="") {
-			prevNode.id="n1l4r" + (++idGen);
-		}
 		base = parseSize(prevNode.parentNode.style.width);
 		percentVal = Math.round(divSizes.prevDiv/base*100);
-		configParam.setConfig("westwidth",  prevNode.id, percentVal);		
+		//preserve the original dimension for use when expanding this panel
+		oldSize = configParam.getConfig("westwidth",  prevNode.id);
+		configParam.setConfig("westwidth_orig",  prevNode.id, oldSize);		
+		configParam.setConfig("westwidth",  prevNode.id, percentVal);
+		percentValCenter = Math.round(divSizes.nextDiv/base*100);
+		configParam.setConfig("centrewidth",  nextNode.id, percentValCenter);		
 	}
 
 //	console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
@@ -868,22 +930,34 @@ function adjustVerticalPanelSize(nextNode, prevNode) {
 function adjustHorizontalPanelSize(nextNode, prevNode) {
 	nextNode.style.height=divSizes.nextDiv + "px";
 	prevNode.style.height=divSizes.prevDiv + "px";
+	var oldSize = null;
+	if(nextNode.id==null || nextNode.id==""){
+		nextNode.id="n1l4r" + (++idGen);
+	}
+	if(prevNode.id==null || prevNode.id=="") {
+		prevNode.id="n1l4r" + (++idGen);
+	}	
 	var base = null;
 	var percentVal = null;
+	var percentValCenter = null;	
 	if(nextNode.className.search("hlayout_south") > -1) {
-		if(nextNode.id==null || nextNode.id==""){
-			nextNode.id="n1l4r" + (++idGen);
-		}		
 		base = parseSize(nextNode.parentNode.style.height);
-		percentVal = Math.round(divSizes.nextDiv/base*100);
-		configParam.setConfig("southheight",  nextNode.id, percentVal);		
+		percentVal = Math.round(divSizes.nextDiv/base*100);		
+		//preserve the original dimension for use when expanding this panel
+		oldSize = configParam.getConfig("southheight",  nextNode.id);
+		configParam.setConfig("southheight_orig",  nextNode.id, oldSize);
+		configParam.setConfig("southheight",  nextNode.id, percentVal);	
+		percentValCenter = Math.round(divSizes.prevDiv/base*100);
+		configParam.setConfig("centrewidth",  prevNode.id, percentValCenter);		
 	} else if(prevNode.className.search("hlayout_north") > -1) {
-		if(prevNode.id==null || prevNode.id=="") {
-			prevNode.id="n1l4r" + (++idGen);
-		}
 		base = parseSize(prevNode.parentNode.style.height);
 		percentVal = Math.round(divSizes.prevDiv/base*100);
-		configParam.setConfig("northheight",  prevNode.id, percentVal);		
+		//preserve the original dimension for use when expanding this panel
+		oldSize = configParam.getConfig("northheight",  prevNode.id);
+		configParam.setConfig("northheight_orig",  prevNode.id, oldSize);		
+		configParam.setConfig("northheight",  prevNode.id, percentVal);
+		percentValCenter = Math.round(divSizes.nextDiv/base*100);
+		configParam.setConfig("centrewidth",  nextNode.id, percentValCenter);		
 	}	
 //	console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
 	var nextwidth = parseSize(nextNode.style.width);
@@ -961,22 +1035,22 @@ function collapsePanel(id) {
 	var siblingHeight = null;
 	var siblingWidth = null;
 	
-	if(className.endsWith("west")) {
+	if(className=="vlayout_west") {
 		sibling = getNextDivForClassName(element, "vlayout_center");
 		width = 0;
 		siblingWidth = parseSize(sibling.style.width) + parseSize(element.style.width);
 		collapseOrShowVerticalPanels(siblingWidth, width, sibling, element);
-	} else if(className.endsWith("east")){
+	} else if(className=="vlayout_east"){
 		sibling = getPreviousDivForClassName(element, "vlayout_center");
 		width = 0;
 		siblingWidth = parseSize(sibling.style.width) + parseSize(element.style.width);
 		collapseOrShowVerticalPanels(width, siblingWidth, element, sibling);		
-	} else if(className.endsWith("north")){
+	} else if(className=="hlayout_north"){
 		sibling = getNextDivForClassName(element, "hlayout_center");
 		height = 0;
 		siblingHeight = parseSize(sibling.style.height) + parseSize(element.style.height);
 		collapseOrShowHorizontalPanels(siblingHeight, height, sibling, element);
-	} else if(className.endsWith("south")){
+	} else if(className=="hlayout_south"){
 		sibling = getPreviousDivForClassName(element, "hlayout_center");
 		height=0;
 		siblingHeight = parseSize(sibling.style.height) + parseSize(element.style.height);
@@ -1000,37 +1074,37 @@ function expandPanel(id) {
 	var siblingWidth = null;
 	var parentSize = null;
 	
-	if(className.endsWith("west")) {
+	if(className=="vlayout_west") {
 		parentSize = parseSize(element.parentNode.style.width);
 		sibling = getNextDivForClassName(element, "vlayout_center");
-		width = Math.round(parentSize*(configParam.getConfig("westwidth", id)/100));
+		width = Math.round(parentSize*(configParam.getConfig("westwidth_orig", id)/100));
 		siblingWidth = parseSize(sibling.style.width) - width;
 		if(siblingWidth < 0) {
 			siblingWidth=0;
 		}
 		collapseOrShowVerticalPanels(siblingWidth, width, sibling, element);
-	} else if(className.endsWith("east")){
+	} else if(className=="vlayout_east"){
 		parentSize = parseSize(element.parentNode.style.width);		
 		sibling = getPreviousDivForClassName(element,"vlayout_center");
-		width = Math.round(parentSize*(configParam.getConfig("eastwidth", id)/100));
+		width = Math.round(parentSize*(configParam.getConfig("eastwidth_orig", id)/100));
 		siblingWidth = parseSize(sibling.style.width) - width;
 		if(siblingWidth < 0) {
 			siblingWidth=0;
 		}
 		collapseOrShowVerticalPanels(width, siblingWidth, element, sibling);		
-	} else if(className.endsWith("north")){
+	} else if(className=="hlayout_north"){
 		parentSize = parseSize(element.parentNode.style.height);		
 		sibling = getNextDivForClassName(element, "hlayout_center");
-		height = Math.round(parentSize*(configParam.getConfig("northheight", id)/100));
+		height = Math.round(parentSize*(configParam.getConfig("northheight_orig", id)/100));
 		siblingHeight = parseSize(sibling.style.height) - height;
 		if(siblingHeight < 0) {
 			siblingHeight=0;
 		}		
 		collapseOrShowHorizontalPanels(siblingHeight, height, sibling, element);
-	} else if(className.endsWith("south")){
+	} else if(className=="hlayout_south"){
 		parentSize = parseSize(element.parentNode.style.height);		
 		sibling = getPreviousDivForClassName(element, "hlayout_center");
-		height=Math.round(parentSize*(configParam.getConfig("southheight", id)/100));
+		height=Math.round(parentSize*(configParam.getConfig("southheight_orig", id)/100));
 		siblingHeight = parseSize(sibling.style.height) - height;
 		if(siblingHeight < 0) {
 			siblingHeight=0;

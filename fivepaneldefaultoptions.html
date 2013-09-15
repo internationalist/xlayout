@@ -2,20 +2,42 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="style/xlayout.css"/>
-<script src="js/xlayout.js"></script>
+<link rel="stylesheet" type="text/css" href="style/normalize.css"/>	
+	<script src="js/jquery-1.9.1.min.js"></script>
+	<script src="js/jquery-migrate-1.1.1.min.js"></script>
+	<script src="js/xlayout.js"></script>
 	<script>
-		window.onload=function() {new Xlayout('container')};
+		var layout = null;
+		window.onload=function() {layout= new Xlayout('container')};
+		
+function hide(id) {
+	layout.hidePanel(id);
+}
+
+function show(id) {
+	layout.showPanel(id);
+}
 	</script>		
 </head>
 <body>
 	<div id="container">
-		<div class="hlayout_north"> Header</div>
+		<div class="hlayout_north" id="north"> Header</div>
 		<div class="hlayout_center">
-			<div class="vlayout_west">West</div>
-			<div class="vlayout_center">Body</div>
-			<div class="vlayout_east">East</div>
+			<div class="vlayout_west" id="west">West</div>
+			<div class="vlayout_center">
+	<input type="button" value="Hide Header" id="hideheader" onclick="hide('north');"></input>
+	<input type="button" value="Show Header" id="showheader" onclick="show('north');"></input>
+	<input type="button" value="Hide West Menu" id="hidewmenu" onclick="hide('west');"></input>
+	<input type="button" value="Show West Menu" id="showwmenu" onclick="show('west');"></input>
+	<input type="button" value="Hide East Menu" id="hideemenu" onclick="hide('east');"></input>
+	<input type="button" value="Show East Menu" id="showemenu" onclick="show('east');"></input>
+	<input type="button" value="Hide Footer" id="hidefooter" onclick="hide('footer');"></input>
+	<input type="button" value="Show Footer" id="showfooter" onclick="show('footer');"></input>
+
+</div>
+			<div class="vlayout_east" id="east">East</div>
 		</div>
-		<div class="hlayout_south">Footer</div>
+		<div class="hlayout_south" id="footer">Footer</div>
 	</div>
 </body>
 </html>
