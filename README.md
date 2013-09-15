@@ -13,8 +13,7 @@ Download the folders js and style. The js contains the javascript file xlayout.j
 
 Note: Above example assumes that you have placed the js file and the css in the same location as your html.
 
-<h4>Bowery</h4>
-Dude I would totally do that if I only got how the damn thing works!
+
 
 <h2>Tutorial<h2>
 ==========
