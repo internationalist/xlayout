@@ -167,6 +167,7 @@ Library.
 */
 
 var configParam = null;
+var idGen = 0;
 
 function ConfigParam() {
 	this.initParam = {
@@ -212,7 +213,8 @@ function ConfigParam() {
 	}
 	
 	this.getConfig = function(token, id) {
-		retValue = null;
+		var retValue = null;
+		var tempParams = null;
 		if(this.initParam[id]) {
 			tempParams = this.initParam[id];
 			if(tempParams[token]!=null) {
@@ -224,6 +226,17 @@ function ConfigParam() {
 			retValue = this.initParam.default[token];
 		}
 		return retValue;
+	}
+	
+	this.setConfig = function(token, id, value) {
+		var tempParams = null;
+		if(this.initParam[id]) {
+			tempParams = this.initParam[id];
+			tempParams[token] = value;
+		} else {
+			this.initParam[id] = new Object();
+			this.initParam[id][token] = value;
+		}
 	}
 }
 
@@ -238,14 +251,15 @@ function viewport(container, mode){
 
 function Xlayout(container, mode, param) {
 	
-	//window.onload=function() {
-		if(container=='body') {
-			containerElement = document.body;
-		} else {
-			containerElement = getChildUsingIdOrClass(document.body, container);
-		}		
-		init(containerElement, mode, param);
-//	}
+	if(container=='body') {
+		containerElement = document.body;
+	} else {
+		containerElement = getChildUsingIdOrClass(document.body, container);
+	}		
+	init(containerElement, mode, param);
+		
+	this.hidePanel=collapsePanel;
+	this.showPanel=expandPanel;
 }
 
 //This get called once only from the client html page!!
@@ -329,12 +343,11 @@ function pack(rootElement, size) {
 			//find out if this is a container element and void styles if this is the case.
 			resetStylesIfContainer(hlayout_north, "hlayout_north");
 			
-			hlayoutNorthHeight = Math.round((screenheight*(configParam.getConfig("northheight", hlayout_north.id)))/100);
+			hlayoutNorthHeight = Math.round(screenheight*(configParam.getConfig("northheight", hlayout_north.id)/100));
 			if(hlayoutNorthHeight <= 10) {
 				hlayout_north.style.display="none";
-				hlayout_north.style.height="0px";
 			} else {
-
+				hlayout_north.style.display="block";
 				hlayout_north.style.height=hlayoutNorthHeight + "px"; //3% of total height
 				//compensate for border width if any
 				config.hlayout_north_xborder=0;
@@ -345,16 +358,17 @@ function pack(rootElement, size) {
 					hlayout_north.style.display="none";
 				} else {
 					hlayout_north.style.display="block";
+					hlayout_north.style.width=northWidth + "px";
+					if(config.hlayout_north_border) {
+						borderWidths += config.hlayout_north_border;
+					}					
 				}
-				
-				hlayout_north.style.width=northWidth + "px";			
-				
-				//if resize bars are needed generate them
-				if(configParam.getConfig("resizebar", hlayout_north.id)) {
-					createHBarsBeforeElement(hlayout_center);
-					//then add resize bar width to borderWidths
-					borderWidths += 6;
-				}
+			}
+			//if resize bars are needed generate them
+			if(configParam.getConfig("resizebar", hlayout_north.id)) {
+				createHBarsBeforeElement(hlayout_center);
+				//then add resize bar width to borderWidths
+				borderWidths += 6;
 			}
 		}
 		
@@ -363,13 +377,12 @@ function pack(rootElement, size) {
 			//find out if this is a container element and void styles if this is the case.			
 			resetStylesIfContainer(hlayout_north, "hlayout_south");
 			//hlayoutSouthHeight = Math.round((screenheight*params.southheight)/100); //4% of total height
-			hlayoutSouthHeight = Math.round((screenheight*(configParam.getConfig("southheight", hlayout_south.id)))/100); //4% of total height
+			hlayoutSouthHeight = Math.round(screenheight*(configParam.getConfig("southheight", hlayout_south.id)/100)); //4% of total height
 			if(hlayoutSouthHeight <= 20) {
 				hlayout_south.style.display="none";
-				hlayout_south.style.height="0px";
 			} else {
-				//hlayout_south.style.display="block";				
-				hlayout_south.style.height=hlayoutSouthHeight + "px";
+				hlayout_south.style.display="block";
+				hlayout_south.style.height=hlayoutSouthHeight + "px";			
 				processBorders(hlayout_south, config, "vertical", "hlayout_south");
 				//adjust the width for borders
 				var southWidth = screenwidth - config.hlayout_south_xborder;
@@ -377,14 +390,18 @@ function pack(rootElement, size) {
 					hlayout_south.style.display="none";
 				} else {
 					hlayout_south.style.display="block";
+					hlayout_south.style.width=southWidth + "px";
+					if(config.hlayout_south_border) {
+						borderWidths += config.hlayout_south_border;
+					}					
 				}				
-				hlayout_south.style.width=southWidth + "px";			
-				//if resize bars are needed generate them
-				if(configParam.getConfig("resizebar", hlayout_south.id)) {
-					createHBarsBeforeElement(hlayout_south);
-					//then add resize bar width to borderWidths
-					borderWidths += 6;
-				}
+				
+			}
+			//if resize bars are needed generate them
+			if(configParam.getConfig("resizebar", hlayout_south.id)) {
+				createHBarsBeforeElement(hlayout_south);
+				//then add resize bar width to borderWidths
+				borderWidths += 6;
 			}
 		}
 		
@@ -394,13 +411,6 @@ function pack(rootElement, size) {
 		//adjust the width for borders
 		centerWidth = screenwidth - config.hlayout_center_xborder;
 		hlayout_center.style.width=centerWidth + "px";		
-		
-		if(config.hlayout_north_border) {
-			borderWidths += config.hlayout_north_border;
-		}
-		if(config.hlayout_south_border) {
-			borderWidths += config.hlayout_south_border;
-		}		
 		centerContainerHeight = screenheight - (hlayoutNorthHeight + hlayoutSouthHeight) - borderWidths - config.hlayout_center_border;
 		if(centerContainerHeight < 10 || centerWidth < 10) {
 			hlayout_center.style.display="none";
@@ -418,8 +428,6 @@ function pack(rootElement, size) {
 		if(hlayout_south) {
 			pack(hlayout_south, {width:southWidth, height:hlayoutSouthHeight});			
 		}		
-		
-		
 	}
 	
 	//style
@@ -444,12 +452,12 @@ function pack(rootElement, size) {
 		if(vlayout_west) {
 			//reset the class name
 			resetStylesIfContainer(vlayout_west, "vlayout_west");			
-			topWestWidth = Math.round((screenwidth*(configParam.getConfig("westwidth", vlayout_west.id)))/100);
+			topWestWidth = Math.round(screenwidth*(configParam.getConfig("westwidth", vlayout_west.id)/100));
 			if(topWestWidth <= 10) {
 				vlayout_west.style.display="none";
 			} else {
-								
-				vlayout_west.style.width=topWestWidth + "px";
+				vlayout_west.style.display="block";				
+				vlayout_west.style.width=topWestWidth + "px";			
 				processBorders(vlayout_west, config, "horizontal", "vlayout_west");
 				//adjust the width for borders
 				var westHeight = screenheight - config.vlayout_west_xborder;
@@ -457,27 +465,29 @@ function pack(rootElement, size) {
 					vlayout_west.style.display="none";
 				} else {
 					vlayout_west.style.display="block";
+					vlayout_west.style.height=westHeight + "px";
+					if(config.vlayout_west_border) {
+						borderWidths += config.vlayout_west_border;
+					}					
 				}
-				vlayout_west.style.height=westHeight + "px";				
-				if(configParam.getConfig("resizebar", vlayout_west.id)) {				
-					createVBarsBeforeElement(vlayout_center);
-					//then add resize bar width to borderWidths
-					borderWidths += 6;
-				}
+				
 			}
-			
+			if(configParam.getConfig("resizebar", vlayout_west.id)) {				
+				createVBarsBeforeElement(vlayout_center);
+				//then add resize bar width to borderWidths
+				borderWidths += 6;
+			}
 		}
 		
 		if(vlayout_east) {
-			vlayout_east.style.display="block";			
 			//reset the class name
 			resetStylesIfContainer(vlayout_east, "vlayout_east");			
-			topEastWidth = Math.round((screenwidth*(configParam.getConfig("eastwidth", vlayout_east.id)))/100);			
+			topEastWidth = Math.round(screenwidth*(configParam.getConfig("eastwidth", vlayout_east.id)/100));			
 			
 			if(topEastWidth <= 10) {
 				vlayout_east.style.display="none";
 			} else {
-				vlayout_east.style.display="block";				
+				vlayout_east.style.display="block";
 				vlayout_east.style.width=topEastWidth + "px";
 				processBorders(vlayout_east, config, "horizontal", "vlayout_east");
 				//adjust the width for borders
@@ -486,23 +496,20 @@ function pack(rootElement, size) {
 					vlayout_east.style.display="none";
 				} else {
 					vlayout_east.style.display="block";
+					vlayout_east.style.height=eastHeight + "px";
+					if(config.vlayout_east_border) {
+						borderWidths += config.vlayout_east_border;
+					}					
 				}				
-				vlayout_east.style.height=eastHeight + "px";
-				if(configParam.getConfig("resizebar", vlayout_east.id)) {				
-					createVBarsBeforeElement(vlayout_east);
-					//then add resize bar width to borderWidths
-					borderWidths += 6;
-				}
+			}
+			if(configParam.getConfig("resizebar", vlayout_east.id)) {				
+				createVBarsBeforeElement(vlayout_east);
+				//then add resize bar width to borderWidths
+				borderWidths += 6;
 			}
 		}
 		
 
-		if(config.vlayout_west_border) {
-			borderWidths += config.vlayout_west_border;
-		}
-		if(config.vlayout_east_border) {
-			borderWidths += config.vlayout_east_border;
-		}		
 		
 		processBorders(vlayout_center, config, "horizontal", "vlayout_center");			
 		topCenterWidth = screenwidth - (topWestWidth + topEastWidth) - borderWidths - config.vlayout_center_border;
@@ -607,7 +614,6 @@ function processBorders(element, config, orientation, className) {
 	//set overflow to auto if it is not already specified. Do this only for non container elements.
 	//also set border if not already defined This one too for only non containers or 'content' elements XD
 	if(!isContainer(element)) {
-		//console.log(style);		
 		if(!style['overflow'] || style['overflow'] != 'auto') {
 			element.style.overflow='auto';
 		}
@@ -629,41 +635,7 @@ function processBorders(element, config, orientation, className) {
 	//console.log(Math.round(parseSize(window.getComputedStyle(element,null)["borderLeftWidth"])));
 	config[className + "_border"] = 0;
 	config[className + "_xborder"] = 0;	
-/*	if(element.style.borderWidth) {//if divs have borders we set them to have fixed value of 1px
-		//get the width as a number
-		config[element.className + "_border"] = parseSize(element.style.borderWidth)*2;
-	} else if(orientation=="horizontal") {
-		if(element.style.borderRight) {
-			config.increment(element.className + "_border",
-					parseSizeFromString(element.style.borderRight));			
-		} else if(element.style.borderRightWidth){
-			config.increment(element.className + "_border",
-					parseSize(element.style.borderRightWidth));
-		}
-		if(element.style.borderLeft) {
-			config.increment(element.className + "_border",
-					parseSizeFromString(element.style.borderLeft));			
-		} else if(element.style.borderLeftWidth){
-			config.increment(element.className + "_border",
-					parseSize(element.style.borderLeftWidth));			
-		}	
-	} else if(orientation=="vertical") {
-		if(element.style.borderTop) {
-			config.increment(element.className + "_border",
-					parseSizeFromString(element.style.borderTop));			
-		} else if(element.style.borderTopWidth){
-			config.increment(element.className + "_border",
-					parseSize(element.style.borderTopWidth));			
-		}
-		
-		if(element.style.borderBottom) {
-			config.increment(element.className + "_border",
-					parseSizeFromString(element.style.borderBottom));				
-		} else if(element.style.borderBottomWidth){
-			config.increment(element.className + "_border",
-					parseSize(element.style.borderBottomWidth));			
-		}
-	}*/
+
 	if(orientation=="horizontal") {
 		//adjust for borders
 		adjustHorizontalSize(style, "borderLeftWidth", "borderRightWidth",
@@ -818,41 +790,13 @@ function MouseDragMonitor() {
 				mouseX = e.clientX;
 				delta = mouseX - this.originalMouseAxePos;//check the delta
 				if(delta != 0) {//if the mousemove is not significant then do nothing.
+					//calculate the div size changes
 					divSizes = calculateSiblingDivSizes(this.originaPrevDivSize, this.originalNextDivSize, delta);
 					this.flag = 0;
 					//collapse the section if width becomes 0
-					var collapsedDiv = collapseSection(this.prevNode, this.nextNode, divSizes);
-					if(collapsedDiv) {
-						if(collapsedDiv.action=="hide") {
-							if(collapsedDiv.nodeType=="next") {
-								var style = window.getComputedStyle(this.nextNode,null);
-								config = calculateBorderMarginPaddingSize(style, "nextNode");
-								divSizes.prevDiv = divSizes.prevDiv + config["nextNode_border"];
-							} else if(collapsedDiv.nodeType=="previous") {
-								var style = window.getComputedStyle(this.prevNode,null);
-								config = calculateBorderMarginPaddingSize(style, "prevNode");							
-								divSizes.nextDiv = divSizes.nextDiv + config["prevNode_border"];	
-							}
-						} else if(collapsedDiv.action=="show") {
-							if(collapsedDiv.nodeType=="next") {
-								var style = window.getComputedStyle(this.nextNode,null);
-								config = calculateBorderMarginPaddingSize(style, "nextNode");
-								divSizes.prevDiv = divSizes.prevDiv - config["nextNode_border"];
-							} else if(collapsedDiv.nodeType=="previous") {
-								var style = window.getComputedStyle(this.prevNode,null);
-								config = calculateBorderMarginPaddingSize(style, "prevNode");							
-								divSizes.nextDiv = divSizes.nextDiv - config["prevNode_border"];	
-							}
-						}
-					}
-					this.nextNode.style.width=divSizes.nextDiv + "px";
-					this.prevNode.style.width=divSizes.prevDiv + "px";				
-					console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
-					var nextheight = parseSize(this.nextNode.style.height);
-					var prevheight = parseSize(this.prevNode.style.height);				
-					//pack the elements
-					pack(this.nextNode, {width:divSizes.nextDiv, height:nextheight});
-					pack(this.prevNode, {width:divSizes.prevDiv, height:prevheight});
+					collapseSection(this.prevNode, this.nextNode, divSizes);
+					//make the actual size adjustments.
+					adjustVerticalPanelSize(this.nextNode, this.prevNode);
 				}
 			} else if(this.flag==1 && this.target.className=="horizontal") {
 				this.flag=0;				
@@ -863,38 +807,8 @@ function MouseDragMonitor() {
 					divSizes = calculateSiblingDivSizes(this.originaPrevDivSize, this.originalNextDivSize, delta);
 					this.flag = 0;
 					//collapse the section if height becomes 0
-					var collapsedDiv = collapseSection(this.prevNode, this.nextNode, divSizes);
-					if(collapsedDiv) {
-						if(collapsedDiv.action=="hide") {
-							if(collapsedDiv.nodeType=="next") {
-								var style = window.getComputedStyle(this.nextNode,null);
-								config = calculateBorderMarginPaddingSize(style, "nextNode");
-								divSizes.prevDiv = divSizes.prevDiv + config["nextNode_border"];
-							} else if(collapsedDiv.nodeType=="previous") {
-								var style = window.getComputedStyle(this.prevNode,null);
-								config = calculateBorderMarginPaddingSize(style, "prevNode");							
-								divSizes.nextDiv = divSizes.nextDiv + config["prevNode_border"];	
-							}
-						} else if(collapsedDiv.action=="show") {
-							if(collapsedDiv.nodeType=="next") {
-								var style = window.getComputedStyle(this.nextNode,null);
-								config = calculateBorderMarginPaddingSize(style, "nextNode");
-								divSizes.prevDiv = divSizes.prevDiv - config["nextNode_border"];
-							} else if(collapsedDiv.nodeType=="previous") {
-								var style = window.getComputedStyle(this.prevNode,null);
-								config = calculateBorderMarginPaddingSize(style, "prevNode");							
-								divSizes.nextDiv = divSizes.nextDiv - config["prevNode_border"];	
-							}
-						}
-					}				
-					this.nextNode.style.height=divSizes.nextDiv + "px";
-					this.prevNode.style.height=divSizes.prevDiv + "px";				
-					console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
-					var nextwidth = parseSize(this.nextNode.style.width);
-					var prevwidth = parseSize(this.prevNode.style.width);
-					//pack the elements
-					pack(this.nextNode, {width:nextwidth, height:divSizes.nextDiv});
-					pack(this.prevNode, {width:prevwidth, height:divSizes.prevDiv});
+					collapseSection(this.prevNode, this.nextNode, divSizes);
+					adjustHorizontalPanelSize(this.nextNode, this.prevNode);
 				}
 			}
 		}, false);
@@ -919,6 +833,64 @@ function calculateBorderMarginPaddingSize(style, token) {
 	
 	return config;
 	
+}
+
+function adjustVerticalPanelSize(nextNode, prevNode) {
+	nextNode.style.width=divSizes.nextDiv + "px";
+	prevNode.style.width=divSizes.prevDiv + "px";
+
+	var base = null;
+	var percentVal = null;
+	if(nextNode.className.search("vlayout_east") > -1) {
+		if(nextNode.id==null || nextNode.id==""){
+			nextNode.id="n1l4r" + (++idGen);
+		}		
+		base = parseSize(nextNode.parentNode.style.width);
+		percentVal = Math.round(divSizes.nextDiv/base*100);
+		configParam.setConfig("eastwidth",  nextNode.id, percentVal);		
+	} else if(prevNode.className.search("vlayout_west") > -1) {
+		if(prevNode.id==null || prevNode.id=="") {
+			prevNode.id="n1l4r" + (++idGen);
+		}
+		base = parseSize(prevNode.parentNode.style.width);
+		percentVal = Math.round(divSizes.prevDiv/base*100);
+		configParam.setConfig("westwidth",  prevNode.id, percentVal);		
+	}
+
+//	console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
+	var nextheight = parseSize(nextNode.style.height);
+	var prevheight = parseSize(prevNode.style.height);				
+	//pack the elements
+	pack(nextNode, {width:divSizes.nextDiv, height:nextheight});
+	pack(prevNode, {width:divSizes.prevDiv, height:prevheight});
+}
+
+function adjustHorizontalPanelSize(nextNode, prevNode) {
+	nextNode.style.height=divSizes.nextDiv + "px";
+	prevNode.style.height=divSizes.prevDiv + "px";
+	var base = null;
+	var percentVal = null;
+	if(nextNode.className.search("hlayout_south") > -1) {
+		if(nextNode.id==null || nextNode.id==""){
+			nextNode.id="n1l4r" + (++idGen);
+		}		
+		base = parseSize(nextNode.parentNode.style.height);
+		percentVal = Math.round(divSizes.nextDiv/base*100);
+		configParam.setConfig("southheight",  nextNode.id, percentVal);		
+	} else if(prevNode.className.search("hlayout_north") > -1) {
+		if(prevNode.id==null || prevNode.id=="") {
+			prevNode.id="n1l4r" + (++idGen);
+		}
+		base = parseSize(prevNode.parentNode.style.height);
+		percentVal = Math.round(divSizes.prevDiv/base*100);
+		configParam.setConfig("northheight",  prevNode.id, percentVal);		
+	}	
+//	console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
+	var nextwidth = parseSize(nextNode.style.width);
+	var prevwidth = parseSize(prevNode.style.width);
+	//pack the elements
+	pack(nextNode, {width:nextwidth, height:divSizes.nextDiv});
+	pack(prevNode, {width:prevwidth, height:divSizes.prevDiv});	
 }
 
 function collapseSection(prevNode, nextNode, divSizes) {
@@ -951,7 +923,138 @@ function collapseSection(prevNode, nextNode, divSizes) {
 		}		
 		prevNode.style.display="block";
 	}
+	
+	if(collapsedDiv) {
+		if(collapsedDiv.action=="hide") {
+			if(collapsedDiv.nodeType=="next") {
+				var style = window.getComputedStyle(nextNode,null);
+				config = calculateBorderMarginPaddingSize(style, "nextNode");
+				divSizes.prevDiv = divSizes.prevDiv + config["nextNode_border"];
+			} else if(collapsedDiv.nodeType=="previous") {
+				var style = window.getComputedStyle(prevNode,null);
+				config = calculateBorderMarginPaddingSize(style, "prevNode");							
+				divSizes.nextDiv = divSizes.nextDiv + config["prevNode_border"];	
+			}
+		} else if(collapsedDiv.action=="show") {
+			if(collapsedDiv.nodeType=="next") {
+				var style = window.getComputedStyle(nextNode,null);
+				config = calculateBorderMarginPaddingSize(style, "nextNode");
+				divSizes.prevDiv = divSizes.prevDiv - config["nextNode_border"];
+			} else if(collapsedDiv.nodeType=="previous") {
+				var style = window.getComputedStyle(prevNode,null);
+				config = calculateBorderMarginPaddingSize(style, "prevNode");							
+				divSizes.nextDiv = divSizes.nextDiv - config["prevNode_border"];	
+			}
+		}
+	}
+	
+	
 	return collapsedDiv;
+}
+
+function collapsePanel(id) {
+	var element = document.getElementById(id);
+	var className =  element.className;
+	var sibling = null;
+	var height = null;
+	var width = null;
+	var siblingHeight = null;
+	var siblingWidth = null;
+	
+	if(className.endsWith("west")) {
+		sibling = getNextDivForClassName(element, "vlayout_center");
+		width = 0;
+		siblingWidth = parseSize(sibling.style.width) + parseSize(element.style.width);
+		collapseOrShowVerticalPanels(siblingWidth, width, sibling, element);
+	} else if(className.endsWith("east")){
+		sibling = getPreviousDivForClassName(element, "vlayout_center");
+		width = 0;
+		siblingWidth = parseSize(sibling.style.width) + parseSize(element.style.width);
+		collapseOrShowVerticalPanels(width, siblingWidth, element, sibling);		
+	} else if(className.endsWith("north")){
+		sibling = getNextDivForClassName(element, "hlayout_center");
+		height = 0;
+		siblingHeight = parseSize(sibling.style.height) + parseSize(element.style.height);
+		collapseOrShowHorizontalPanels(siblingHeight, height, sibling, element);
+	} else if(className.endsWith("south")){
+		sibling = getPreviousDivForClassName(element, "hlayout_center");
+		height=0;
+		siblingHeight = parseSize(sibling.style.height) + parseSize(element.style.height);
+		collapseOrShowHorizontalPanels(height,siblingHeight,element,sibling);
+	}
+
+}
+
+function expandPanel(id) {
+	var element = document.getElementById(id);
+	//just check of the panel is already visible if it is then do nothing
+	if(element.style.display!="none") {
+		return;
+	}
+	//element.parentNode.style
+	var className =  element.className;
+	var sibling = null;
+	var height = null;
+	var width = null;
+	var siblingHeight = null;
+	var siblingWidth = null;
+	var parentSize = null;
+	
+	if(className.endsWith("west")) {
+		parentSize = parseSize(element.parentNode.style.width);
+		sibling = getNextDivForClassName(element, "vlayout_center");
+		width = Math.round(parentSize*(configParam.getConfig("westwidth", id)/100));
+		siblingWidth = parseSize(sibling.style.width) - width;
+		if(siblingWidth < 0) {
+			siblingWidth=0;
+		}
+		collapseOrShowVerticalPanels(siblingWidth, width, sibling, element);
+	} else if(className.endsWith("east")){
+		parentSize = parseSize(element.parentNode.style.width);		
+		sibling = getPreviousDivForClassName(element,"vlayout_center");
+		width = Math.round(parentSize*(configParam.getConfig("eastwidth", id)/100));
+		siblingWidth = parseSize(sibling.style.width) - width;
+		if(siblingWidth < 0) {
+			siblingWidth=0;
+		}
+		collapseOrShowVerticalPanels(width, siblingWidth, element, sibling);		
+	} else if(className.endsWith("north")){
+		parentSize = parseSize(element.parentNode.style.height);		
+		sibling = getNextDivForClassName(element, "hlayout_center");
+		height = Math.round(parentSize*(configParam.getConfig("northheight", id)/100));
+		siblingHeight = parseSize(sibling.style.height) - height;
+		if(siblingHeight < 0) {
+			siblingHeight=0;
+		}		
+		collapseOrShowHorizontalPanels(siblingHeight, height, sibling, element);
+	} else if(className.endsWith("south")){
+		parentSize = parseSize(element.parentNode.style.height);		
+		sibling = getPreviousDivForClassName(element, "hlayout_center");
+		height=Math.round(parentSize*(configParam.getConfig("southheight", id)/100));
+		siblingHeight = parseSize(sibling.style.height) - height;
+		if(siblingHeight < 0) {
+			siblingHeight=0;
+		}		
+		collapseOrShowHorizontalPanels(height,siblingHeight,element,sibling);
+	}
+}
+
+function collapseOrShowHorizontalPanels(next, previous, nextElement, prevElement) {
+	//calculate the div size changes
+	divSizes = {nextDiv:next,prevDiv:previous};
+	//collapse the section
+	collapseSection(prevElement, nextElement, divSizes);
+	//make the actual size adjustments.
+	adjustHorizontalPanelSize(nextElement, prevElement);
+}
+
+function collapseOrShowVerticalPanels(next, previous, nextElement, prevElement) {
+	//calculate the div size changes
+	divSizes = {nextDiv:next,prevDiv:previous};
+	//collapse the section
+	collapseSection(prevElement, nextElement, divSizes);
+	//make the actual size adjustments.
+	adjustVerticalPanelSize(nextElement, prevElement);
 }
 
 function calculateSiblingDivSizes(originaPrevDivSize, originalNextDivSize, delta) {
@@ -983,9 +1086,26 @@ function getPreviousDiv(element) {
 	return prevNode;
 }
 
+function getPreviousDivForClassName(element, className) {
+	prevNode = element.previousSibling;
+	while(prevNode && (prevNode.nodeType!=1 || !(prevNode.className && prevNode.className.search(className) >-1))) {
+		prevNode=prevNode.previousSibling;
+	}
+	return prevNode;
+}
+
 function getNextDiv(element) {
 	nextNode = element.nextSibling;
 	while(nextNode && nextNode.nodeType!=1) {
+		nextNode=nextNode.nextSibling;
+	}
+	return nextNode;
+}
+
+function getNextDivForClassName(element, className) {
+	nextNode = element.nextSibling;
+	while(nextNode && (nextNode.nodeType!=1 || !(nextNode.className
+			&& nextNode.className.search(className) > -1))){
 		nextNode=nextNode.nextSibling;
 	}
 	return nextNode;
