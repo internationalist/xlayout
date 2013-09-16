@@ -592,8 +592,8 @@ function createVBarsBeforeElement(vlayoutPanel) {
 			vertical = document.createElement("div");
 			vertical.className = "vertical";
 			vlayoutPanel.parentNode.insertBefore(vertical, vlayoutPanel);
-		}		
-
+		}
+		
 		var style = window.getComputedStyle(vertical,null);
 		trimVerticalStyles(vertical);
 		var config = calculateBorderMarginPaddingSize(style, "vbar");
@@ -1046,6 +1046,9 @@ function collapseSection(prevNode, nextNode, divSizes) {
 
 function collapsePanel(id) {
 	var element = document.getElementById(id);
+	if(element.style.display=="none") {
+		return;
+	}
 	var className =  element.className;
 	var sibling = null;
 	var height = null;
