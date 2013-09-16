@@ -361,9 +361,7 @@ function pack(rootElement, size) {
 
 			//if resize bars are needed generate them
 			if(configParam.getConfig("resizebar", hlayout_north.id)) {
-				createHBarsBeforeElement(hlayout_center);
-				//then add resize bar width to borderWidths
-				borderWidths += 6;
+				borderWidths += createHBarsBeforeElement(hlayout_center);
 			}
 		}
 		
@@ -371,7 +369,6 @@ function pack(rootElement, size) {
 			//reset the class name
 			//find out if this is a container element and void styles if this is the case.			
 			resetStylesIfContainer(hlayout_north, "hlayout_south");
-			//hlayoutSouthHeight = Math.round((screenheight*params.southheight)/100); //4% of total height
 			hlayoutSouthHeight = Math.round(screenheight*(configParam.getConfig("southheight", hlayout_south.id)/100)); //4% of total height
 			processBorders(hlayout_south, config, "vertical", "hlayout_south");
 			//adjust the width for borders
@@ -388,9 +385,7 @@ function pack(rootElement, size) {
 					
 			//if resize bars are needed generate them
 			if(configParam.getConfig("resizebar", hlayout_south.id)) {
-				createHBarsBeforeElement(hlayout_south);
-				//then add resize bar width to borderWidths
-				borderWidths += 6;
+				borderWidths += createHBarsBeforeElement(hlayout_south);;
 			}
 		}
 		
@@ -412,7 +407,6 @@ function pack(rootElement, size) {
 			centerContainerHeight = 0;
 		}
 		//if center panel is closed.
-		//console.log("Center % is " + configParam.getConfig("centrewidth", hlayout_center.id));
 		var centerClosed = configParam.getConfig("centrewidth", hlayout_center.id) == 0;
 		if(centerClosed && centerContainerHeight > 0) {
 			hlayoutSouthHeight +=centerContainerHeight;
@@ -433,8 +427,6 @@ function pack(rootElement, size) {
 			//recursive call
 			pack(hlayout_center, {width:centerWidth, height:centerContainerHeight});			
 		}
-			
-
 
 		if(hlayout_north) {
 			pack(hlayout_north, {width:northWidth, height:hlayoutNorthHeight});			
@@ -467,11 +459,6 @@ function pack(rootElement, size) {
 			//reset the class name
 			resetStylesIfContainer(vlayout_west, "vlayout_west");			
 			topWestWidth = Math.round(screenwidth*(configParam.getConfig("westwidth", vlayout_west.id)/100));
-/*			if(topWestWidth <= 10) {
-				vlayout_west.style.display="none";
-			} else {
-				vlayout_west.style.display="block";
-			}*/
 			processBorders(vlayout_west, config, "horizontal", "vlayout_west");
 				//adjust the width for borders
 			var westHeight = screenheight - config.vlayout_west_xborder;
@@ -486,9 +473,7 @@ function pack(rootElement, size) {
 
 			vlayout_west.style.height=westHeight + "px";
 			if(configParam.getConfig("resizebar", vlayout_west.id)) {				
-				createVBarsBeforeElement(vlayout_center);
-				//then add resize bar width to borderWidths
-				borderWidths += 6;
+				borderWidths += createVBarsBeforeElement(vlayout_center);
 			}
 		}
 		
@@ -497,11 +482,6 @@ function pack(rootElement, size) {
 			resetStylesIfContainer(vlayout_east, "vlayout_east");			
 			topEastWidth = Math.round(screenwidth*(configParam.getConfig("eastwidth", vlayout_east.id)/100));			
 			
-/*			if(topEastWidth <= 10) {
-				vlayout_east.style.display="none";
-			} else {
-				vlayout_east.style.display="block";
-			}*/
 			processBorders(vlayout_east, config, "horizontal", "vlayout_east");
 				//adjust the width for borders
 			var eastHeight = screenheight - config.vlayout_east_xborder;
@@ -516,9 +496,8 @@ function pack(rootElement, size) {
 			vlayout_east.style.height=eastHeight + "px";
 					
 			if(configParam.getConfig("resizebar", vlayout_east.id)) {				
-				createVBarsBeforeElement(vlayout_east);
-				//then add resize bar width to borderWidths
-				borderWidths += 6;
+
+				borderWidths += createVBarsBeforeElement(vlayout_east);
 			}
 		}
 		
@@ -608,29 +587,50 @@ function isContainer(element) {
 
 function createVBarsBeforeElement(vlayoutPanel) {
 	if(vlayoutPanel) {
-		if(vlayoutPanel.previousSibling) {
-			if(vlayoutPanel.previousSibling.className && vlayoutPanel.previousSibling.className=="vertical") {
-				return;
-			}
+		var vertical = resizeBarAlreadyPresent(vlayoutPanel, "vertical");
+		if(vertical == null) {
+			vertical = document.createElement("div");
+			vertical.className = "vertical";
+			vlayoutPanel.parentNode.insertBefore(vertical, vlayoutPanel);
 		}		
-		var vertical = document.createElement("div");
-		vertical.className = "vertical";
-		vlayoutPanel.parentNode.insertBefore(vertical, vlayoutPanel);
+
+		var style = window.getComputedStyle(vertical,null);
+		trimVerticalStyles(vertical);
+		var config = calculateBorderMarginPaddingSize(style, "vbar");
+		console.log(config["vbar_border"] + parseSize(style['width']));
+		return config["vbar_border"] + parseSize(style['width']);		
 	}
 }
 
 function createHBarsBeforeElement(hlayoutPanel) {
-	if(hlayoutPanel) {
-		//check if border element alreay present. In that case do nothing.
-		if(hlayoutPanel.previousSibling) {
-			if(hlayoutPanel.previousSibling.className && hlayoutPanel.previousSibling.className=="horizontal") {
-				return;
+	if(hlayoutPanel) {	
+		var horizontal = resizeBarAlreadyPresent(hlayoutPanel, "horizontal");
+		if(horizontal == null) {
+			horizontal = document.createElement("div");
+			horizontal.className = "horizontal";
+			hlayoutPanel.parentNode.insertBefore(horizontal, hlayoutPanel);
+		}
+		var style = window.getComputedStyle(horizontal,null);
+		trimHorizontalStyles(horizontal);
+		var config = calculateBorderMarginPaddingSize(style, "hbar");
+		console.log(config["hbar_xborder"] + parseSize(style['height']));
+		return config["hbar_xborder"] + parseSize(style['height']);
+	}
+}
+
+function resizeBarAlreadyPresent(panel, orientation) {
+	var retPanel = null;
+	if(panel.previousSibling || panel.nextSibling) {
+		if((panel.previousSibling.className && panel.previousSibling.className==orientation)
+				||(panel.nextSibling.className && panel.nextSibling.className==orientation)) {
+			if(panel.previousSibling) {
+				retPanel = panel.previousSibling;
+			} else {
+				retPanel = panel.nextSibling;
 			}
 		}
-		var horizontal = document.createElement("div");
-		horizontal.className = "horizontal";
-		hlayoutPanel.parentNode.insertBefore(horizontal, hlayoutPanel);
 	}
+	return retPanel;
 }
 
 function getChild(element, className) {
@@ -884,6 +884,24 @@ function calculateBorderMarginPaddingSize(style, token) {
 	
 }
 
+function trimHorizontalStyles(horizontal) {
+	horizontal.style["borderLeft"]="0px";
+	horizontal.style["borderRight"]="0px";
+	horizontal.style["marginLeft"]="0px";
+	horizontal.style["marginRight"]="0px";
+	horizontal.style["paddingLeft"]="0px";
+	horizontal.style["paddingRight"]="0px";
+}
+
+function trimVerticalStyles(horizontal) {
+	horizontal.style["borderTop"]="0px";
+	horizontal.style["borderBottom"]="0px";
+	horizontal.style["marginTop"]="0px";
+	horizontal.style["marginBottom"]="0px";
+	horizontal.style["paddingTop"]="0px";
+	horizontal.style["paddingBottom"]="0px";
+}
+
 function adjustVerticalPanelSize(nextNode, prevNode) {
 	nextNode.style.width=divSizes.nextDiv + "px";
 	prevNode.style.width=divSizes.prevDiv + "px";
@@ -959,7 +977,7 @@ function adjustHorizontalPanelSize(nextNode, prevNode) {
 		percentValCenter = Math.round(divSizes.nextDiv/base*100);
 		configParam.setConfig("centrewidth",  nextNode.id, percentValCenter);		
 	}	
-//	console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
+			
 	var nextwidth = parseSize(nextNode.style.width);
 	var prevwidth = parseSize(prevNode.style.width);
 	//pack the elements
@@ -1065,7 +1083,6 @@ function expandPanel(id) {
 	if(element.style.display!="none") {
 		return;
 	}
-	//element.parentNode.style
 	var className =  element.className;
 	var sibling = null;
 	var height = null;
