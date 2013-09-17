@@ -168,6 +168,8 @@ Library.
 
 var configParam = null;
 var idGen = 0;
+var v_resizeBars = ["vertical"];
+var h_resizeBars = ["horizontal"];
 
 function ConfigParam() {
 	this.initParam = {
@@ -178,7 +180,9 @@ function ConfigParam() {
 	  		eastwidth:25,
 	  		resizable:true,
 	  		resizebar:true,
-	  		border:true
+	  		border:true,
+	  		hbarclassname:"horizontal",
+	  		vbarclassname:"vertical"
 		  	}
 	};
 	this.resolve = function(defConfig) {
@@ -204,6 +208,12 @@ function ConfigParam() {
 			}
 			if(temp.border==null) {
 				temp.border=this.initParam.default.border;
+			}
+			if(temp.hbarclassname==null) {
+				temp.hbarclassname=this.initParam.default.hbarclassname;
+			}
+			if(temp.vbarclassname==null) {
+				temp.vbarclassname=this.initParam.default.vbarclassname;
 			}			
 		} else {
 			defConfig.default=this.initParam.default;
@@ -245,7 +255,7 @@ function viewport(container, mode){
 	if(mode=="window") {
 		return { width : (e[ a+'Width' ]) , height : (e[ a+'Height' ])};
 	} else {
-		return {width:container.scrollWidth, height:container.scrollHeight}
+		return {width:container.clientWidth, height:container.clientHeight}
 	}
 }
 
@@ -361,14 +371,16 @@ function pack(rootElement, size) {
 
 			//if resize bars are needed generate them
 			if(configParam.getConfig("resizebar", hlayout_north.id)) {
-				borderWidths += createHBarsBeforeElement(hlayout_center);
+				borderWidths += createHBarsBeforeElement(hlayout_center, 
+						configParam.getConfig("hbarclassname", hlayout_north.id),
+						configParam.getConfig("resizebartext", hlayout_north.id));
 			}
 		}
 		
 		if(hlayout_south) {
 			//reset the class name
 			//find out if this is a container element and void styles if this is the case.			
-			resetStylesIfContainer(hlayout_north, "hlayout_south");
+			resetStylesIfContainer(hlayout_south, "hlayout_south");
 			hlayoutSouthHeight = Math.round(screenheight*(configParam.getConfig("southheight", hlayout_south.id)/100)); //4% of total height
 			processBorders(hlayout_south, config, "vertical", "hlayout_south");
 			//adjust the width for borders
@@ -385,7 +397,9 @@ function pack(rootElement, size) {
 					
 			//if resize bars are needed generate them
 			if(configParam.getConfig("resizebar", hlayout_south.id)) {
-				borderWidths += createHBarsBeforeElement(hlayout_south);;
+				borderWidths += createHBarsBeforeElement(hlayout_south,
+						configParam.getConfig("hbarclassname", hlayout_south.id),
+						configParam.getConfig("resizebartext", hlayout_south.id));
 			}
 		}
 		
@@ -473,7 +487,9 @@ function pack(rootElement, size) {
 
 			vlayout_west.style.height=westHeight + "px";
 			if(configParam.getConfig("resizebar", vlayout_west.id)) {				
-				borderWidths += createVBarsBeforeElement(vlayout_center);
+				borderWidths += createVBarsBeforeElement(vlayout_center,
+						configParam.getConfig("vbarclassname", vlayout_west.id),
+						configParam.getConfig("resizebartext", vlayout_west.id));
 			}
 		}
 		
@@ -497,7 +513,9 @@ function pack(rootElement, size) {
 					
 			if(configParam.getConfig("resizebar", vlayout_east.id)) {				
 
-				borderWidths += createVBarsBeforeElement(vlayout_east);
+				borderWidths += createVBarsBeforeElement(vlayout_east,
+						configParam.getConfig("vbarclassname", vlayout_east.id),
+						configParam.getConfig("resizebartext", vlayout_east.id));
 			}
 		}
 		
@@ -516,9 +534,6 @@ function pack(rootElement, size) {
 		}
 		
 		var centerClosed = configParam.getConfig("centrewidth", vlayout_center.id) == 0;
-/*		if(centerClosed && topCenterWidth > 0) {
-			topEastWidth +=topCenterWidth;
-		}*/
 		if(vlayout_west) {
 			//hlayout_north.style.height=compensatedValues.previous + "px"; //3% of total height
 			vlayout_west.style.width=topWestWidth + "px"; //3% of total height
@@ -585,15 +600,25 @@ function isContainer(element) {
 	}	
 }
 
-function createVBarsBeforeElement(vlayoutPanel) {
+function addTextNode(element, text) {
+	var textNode = document.createTextNode(text);
+	element.appendChild(textNode);
+}
+
+function createVBarsBeforeElement(vlayoutPanel, className, text) {
+	if(!contains(v_resizeBars, className)) {
+		v_resizeBars.push(className);
+	}	
 	if(vlayoutPanel) {
-		var vertical = resizeBarAlreadyPresent(vlayoutPanel, "vertical");
+		var vertical = resizeBarAlreadyPresent(vlayoutPanel, className);
 		if(vertical == null) {
 			vertical = document.createElement("div");
-			vertical.className = "vertical";
+			vertical.className = className;
 			vlayoutPanel.parentNode.insertBefore(vertical, vlayoutPanel);
+			if(text) {
+				addTextNode(vertical, text);
+			}
 		}
-		
 		var style = window.getComputedStyle(vertical,null);
 		trimVerticalStyles(vertical);
 		var config = calculateBorderMarginPaddingSize(style, "vbar");
@@ -602,13 +627,31 @@ function createVBarsBeforeElement(vlayoutPanel) {
 	}
 }
 
-function createHBarsBeforeElement(hlayoutPanel) {
+function contains(arr, element) {
+	var containsFlag = false;
+	for(var i=0;i<arr.length; i++) {
+		if(arr[i]==element){
+			containsFlag = true;
+			break;
+		}
+	}
+	return containsFlag;
+}
+
+function createHBarsBeforeElement(hlayoutPanel, className, text) {
+	if(!contains(h_resizeBars, className)) {
+		h_resizeBars.push(className);
+	}
 	if(hlayoutPanel) {	
-		var horizontal = resizeBarAlreadyPresent(hlayoutPanel, "horizontal");
+		var horizontal = resizeBarAlreadyPresent(hlayoutPanel, className);
+		
 		if(horizontal == null) {
 			horizontal = document.createElement("div");
-			horizontal.className = "horizontal";
+			horizontal.className = className;
 			hlayoutPanel.parentNode.insertBefore(horizontal, hlayoutPanel);
+			if(text) {
+				addTextNode(horizontal, text);
+			}			
 		}
 		var style = window.getComputedStyle(horizontal,null);
 		trimHorizontalStyles(horizontal);
@@ -635,6 +678,9 @@ function resizeBarAlreadyPresent(panel, orientation) {
 
 function getChild(element, className) {
 	//get all children of the element
+	if(element == null) {
+		console.log("Element is null while processing " + className);
+	}
 	var children = element.childNodes
 	for(i=0;i<children.length;i++) {
 		if(children.item(i).className && (children.item(i).className.search(className) > -1)) {
@@ -782,7 +828,8 @@ function MouseDragMonitor() {
 		this.prevNode = getPreviousDiv(this.target);
 		this.nextNode = getNextDiv(this.target);
 	
-			if(this.target.className=="vertical") {
+			//if(this.target.className=="vertical") {
+		if(contains(v_resizeBars, this.target.className)) {		
 				stopDefault(e);				
 				if(configParam.getConfig("resizable", prevNode.id)==true && configParam.getConfig("resizable", nextNode.id)==true){					
 					this.originaPrevDivSize = parseSize(prevNode.style.width);
@@ -798,7 +845,7 @@ function MouseDragMonitor() {
 					this.dragme_v.style.display='block';
 				}
 	
-			} else if(this.target.className=="horizontal") {
+			} else if(contains(h_resizeBars, this.target.className)) {
 				stopDefault(e);
 				if(configParam.getConfig("resizable", prevNode.id)==true && configParam.getConfig("resizable", nextNode.id)==true){					
 					this.flag = 1;			
@@ -819,10 +866,10 @@ function MouseDragMonitor() {
 	
 	document.addEventListener("mousemove", function(e){
 		if(this.flag == 1) {
-			if(this.target.className=="vertical") {
+			if(contains(v_resizeBars, this.target.className)) {
 				stopDefault(e);				
 				this.dragme_v.style.left=(e.clientX - 3) + "px";
-			} else if(this.target.className=="horizontal") {
+			} else if(contains(h_resizeBars, this.target.className)) {
 				stopDefault(e);				
 				this.dragme_h.style.top=(e.clientY) + "px";			
 			}
@@ -833,7 +880,7 @@ function MouseDragMonitor() {
 	document.addEventListener("mouseup", function(e){
 
 
-			if(this.flag==1 && this.target.className=="vertical") {
+			if(this.flag==1 && contains(v_resizeBars, this.target.className)) {
 				this.flag=0;				
 				this.dragme_v.style.display='none';				
 				mouseX = e.clientX;
@@ -847,7 +894,7 @@ function MouseDragMonitor() {
 					//make the actual size adjustments.
 					adjustVerticalPanelSize(this.nextNode, this.prevNode);
 				}
-			} else if(this.flag==1 && this.target.className=="horizontal") {
+			} else if(this.flag==1 && contains(h_resizeBars, this.target.className)) {
 				this.flag=0;				
 				this.dragme_h.style.display='none';					
 				mouseY = e.clientY;
@@ -937,7 +984,7 @@ function adjustVerticalPanelSize(nextNode, prevNode) {
 		configParam.setConfig("centrewidth",  nextNode.id, percentValCenter);		
 	}
 
-//	console.log("Setting mouse to up with next: " + divSizes.nextDiv + "px" + " and previous: " + divSizes.prevDiv + "px");				
+		
 	var nextheight = parseSize(nextNode.style.height);
 	var prevheight = parseSize(prevNode.style.height);				
 	//pack the elements

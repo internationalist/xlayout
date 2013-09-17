@@ -8,7 +8,13 @@
 	<script src="js/xlayout.js"></script>
 	<script>
 		var layout = null;
-		window.onload=function() {layout= new Xlayout('container')};
+		window.onload=function() {layout= new Xlayout('container','window',
+		 {west:{resizable:false, resizebar:false},
+		  northmenu_south:{resizebar:false,southheight:30}}
+		 );
+		 layout.hidePanel('northmenu_south');
+		 };
+		 
 		
 function hide(id) {
 	layout.hidePanel(id);
@@ -21,7 +27,14 @@ function show(id) {
 </head>
 <body>
 	<div id="container">
-		<div class="hlayout_north" id="north"> Header</div>
+		<div class="hlayout_north" id="north"> 
+					<div id="northmenu_north" onmouseover=show('northmenu_south'); onmouseout=hide('northmenu_south'); class="hlayout_center">
+						Center					
+					</div>
+					<div id="northmenu_south" onmouseover=show('northmenu_south'); onmouseout=hide('northmenu_south');  class="hlayout_south" style="background-color:#E6E6E6;">
+						South
+					</div>
+		</div>
 		<div class="hlayout_center">
 			<div class="vlayout_west" id="west">West</div>
 			<div class="vlayout_center">

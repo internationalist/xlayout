@@ -20,7 +20,9 @@
 			 	westwidth:7
 			 },
 			 innernorth:{
-			 	northheight:50
+			 	northheight:50,
+		    	hbarclassname:"bigText_horizontal",
+				resizebartext:"Below Lies Big Text"
 			 },
 			 default:{
 			 	border:false
@@ -28,7 +30,7 @@
 		 })};
 	</script>		
 </head>
-<body>
+<body style="height:400px;">
 <div id="header" class="hlayout_north" style="background-color:blue;color:white;">
 <span>Main Title of Web Page</span>
 </div>
@@ -40,7 +42,7 @@
 		JavaScript
 	</div>
 	<div id="content" class="vlayout_center">
-			<div class="hlayout_north" style="border:2px solid red;">
+			<div class="hlayout_north">
 			Inner North
 			</div>
 			<div class="hlayout_center border">
