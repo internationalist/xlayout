@@ -182,7 +182,8 @@ function ConfigParam() {
 	  		resizebar:true,
 	  		border:true,
 	  		hbarclassname:"horizontal",
-	  		vbarclassname:"vertical"
+	  		vbarclassname:"vertical",
+	  		lateralmarginfixedlayout:3
 		  	}
 	};
 	this.resolve = function(defConfig) {
@@ -214,7 +215,10 @@ function ConfigParam() {
 			}
 			if(temp.vbarclassname==null) {
 				temp.vbarclassname=this.initParam.default.vbarclassname;
-			}			
+			}
+			if(temp.lateralmarginfixedlayout==null) {
+				temp.lateralmarginfixedlayout=this.initParam.default.lateralmarginfixedlayout;
+			}
 		} else {
 			defConfig.default=this.initParam.default;
 		}
@@ -254,9 +258,12 @@ function viewport(container, mode){
 	var e = window, a = 'inner';
 	if(mode=="window") {
 		return { width : (e[ a+'Width' ]) , height : (e[ a+'Height' ])};
-	} else {
-		return {width:container.clientWidth, height:container.clientHeight}
+	} else if(mode="fixed_window") {
+		container.style.marginLeft=(configParam.getConfig("lateralmarginfixedlayout", container.id)) + "%";
+		return {width:screen.width - calculateScreenWidthOffset(screen.width,
+				configParam.getConfig("lateralmarginfixedlayout", container.id)), height:(screen.height)}
 	}
+	
 }
 
 function Xlayout(container, mode, param) {
@@ -359,14 +366,13 @@ function pack(rootElement, size) {
 			processBorders(hlayout_north, config, "vertical", "hlayout_north");
 			//adjust the width for borders
 			var northWidth = screenwidth - config.hlayout_north_xborder;
-			if(hlayoutNorthHeight <= 10 || northWidth <= 10) {
-				hlayout_north.style.display="none";
-			} else {
-				hlayout_north.style.display="block";
+
+			if(hlayout_north.style.display!="none") {
 				if(config.hlayout_north_border) {
 					borderWidths += config.hlayout_north_border;
-				}				
+				}
 			}
+			
 			hlayout_north.style.width=northWidth + "px";
 
 			//if resize bars are needed generate them
@@ -385,14 +391,12 @@ function pack(rootElement, size) {
 			processBorders(hlayout_south, config, "vertical", "hlayout_south");
 			//adjust the width for borders
 			var southWidth = screenwidth - config.hlayout_south_xborder;
-			if(hlayoutSouthHeight <= 20 || southWidth <= 10) {
-				hlayout_south.style.display="none";
-			} else {
-				hlayout_south.style.display="block";
+			if(hlayout_south.style.display!="none") {
 				if(config.hlayout_south_border) {
 					borderWidths += config.hlayout_south_border;
-				}				
-			}
+				}
+			}			
+			
 			hlayout_south.style.width=southWidth + "px";
 					
 			//if resize bars are needed generate them
@@ -422,9 +426,22 @@ function pack(rootElement, size) {
 		}
 		//if center panel is closed.
 		var centerClosed = configParam.getConfig("centrewidth", hlayout_center.id) == 0;
-		if(centerClosed && centerContainerHeight > 0) {
-			hlayoutSouthHeight +=centerContainerHeight;
+		//we have to explicitly handle open and close of center panel because we haven't yet implemented a function for open/close of center panel.
+		if(centerClosed) {
+			hlayout_center.style.display="none";
+			if(hlayout_south) {
+				hlayoutSouthHeight +=centerContainerHeight;
+				hlayoutSouthHeight +=config.hlayout_center_border;
+			} else if(hlayout_north) {
+				hlayoutNorthHeight +=centerContainerHeight;	
+				hlayoutNorthHeight +=config.hlayout_center_border;
+			}
+			centerContainerHeight=0;
+		} else{
+			hlayout_center.style.display="block";			
+			hlayout_center.style.height=centerContainerHeight + "px";
 		}
+		pack(hlayout_center, {width:centerWidth, height:centerContainerHeight});		
 
 		if(hlayout_north) {
 			hlayout_north.style.height=hlayoutNorthHeight + "px"; //3% of total height
@@ -433,15 +450,6 @@ function pack(rootElement, size) {
 			hlayout_south.style.height=hlayoutSouthHeight + "px";
 		}
 		
-		if(centerClosed ||(centerContainerHeight < 10 || centerWidth < 10)) {
-			hlayout_center.style.display="none";
-		} else{
-			hlayout_center.style.display="block";			
-			hlayout_center.style.height=centerContainerHeight + "px";
-			//recursive call
-			pack(hlayout_center, {width:centerWidth, height:centerContainerHeight});			
-		}
-
 		if(hlayout_north) {
 			pack(hlayout_north, {width:northWidth, height:hlayoutNorthHeight});			
 		}
@@ -476,13 +484,11 @@ function pack(rootElement, size) {
 			processBorders(vlayout_west, config, "horizontal", "vlayout_west");
 				//adjust the width for borders
 			var westHeight = screenheight - config.vlayout_west_xborder;
-			if(topWestWidth <= 10 || westHeight <= 10) {
-				vlayout_west.style.display="none";
-			} else {
-				vlayout_west.style.display="block";
+
+			if(vlayout_west.style.display!='none') {
 				if(config.vlayout_west_border) {
 					borderWidths += config.vlayout_west_border;
-				}				
+				}
 			}
 
 			vlayout_west.style.height=westHeight + "px";
@@ -501,13 +507,10 @@ function pack(rootElement, size) {
 			processBorders(vlayout_east, config, "horizontal", "vlayout_east");
 				//adjust the width for borders
 			var eastHeight = screenheight - config.vlayout_east_xborder;
-			if(topEastWidth <= 10 || eastHeight <= 10) {
-				vlayout_east.style.display="none";
-			} else {
-				vlayout_east.style.display="block";
+			if(vlayout_east.style.display!='none') {
 				if(config.vlayout_east_border) {
 					borderWidths += config.vlayout_east_border;
-				}				
+				}
 			}
 			vlayout_east.style.height=eastHeight + "px";
 					
@@ -534,26 +537,32 @@ function pack(rootElement, size) {
 		}
 		
 		var centerClosed = configParam.getConfig("centrewidth", vlayout_center.id) == 0;
-		if(vlayout_west) {
-			//hlayout_north.style.height=compensatedValues.previous + "px"; //3% of total height
-			vlayout_west.style.width=topWestWidth + "px"; //3% of total height
-		}
-		if(vlayout_east) {
-			//hlayout_south.style.height=compensatedValues.next + "px";
-			vlayout_east.style.width=topEastWidth + "px";
-		}		
-		
-		
-		
-		var centerHeight = screenheight - config.vlayout_center_xborder;		
-		if(centerClosed || (topCenterWidth <= 20 || centerHeight < 10)) {
+		if(centerClosed || (centerHeight < 0)) {
 			vlayout_center.style.display="none";
+			topCenterWidth=0;
+			if(vlayout_west) {
+				topWestWidth +=topCenterWidth;
+				topWestWidth +=config.vlayout_center_border;
+			} else if(vlayout_east) {
+				topEastWidth +=topCenterWidth;	
+				topEastWidth +=config.vlayout_center_border;
+			}			
 		} else {
 			vlayout_center.style.display="block";			
 			vlayout_center.style.width=topCenterWidth + "px";
 			//adjust the width for borders
 			vlayout_center.style.height=centerHeight + "px";			
 		}
+		
+		if(vlayout_west) {
+			vlayout_west.style.width=topWestWidth + "px"; //3% of total height
+		}
+		if(vlayout_east) {
+			vlayout_east.style.width=topEastWidth + "px";
+		}		
+		
+		var centerHeight = screenheight - config.vlayout_center_xborder;		
+
 	
 		//recursive call
 		pack(vlayout_center, {width:topCenterWidth, height:centerHeight});
@@ -622,7 +631,7 @@ function createVBarsBeforeElement(vlayoutPanel, className, text) {
 		var style = window.getComputedStyle(vertical,null);
 		trimVerticalStyles(vertical);
 		var config = calculateBorderMarginPaddingSize(style, "vbar");
-		console.log(config["vbar_border"] + parseSize(style['width']));
+		//console.log(config["vbar_border"] + parseSize(style['width']));
 		return config["vbar_border"] + parseSize(style['width']);		
 	}
 }
@@ -656,7 +665,7 @@ function createHBarsBeforeElement(hlayoutPanel, className, text) {
 		var style = window.getComputedStyle(horizontal,null);
 		trimHorizontalStyles(horizontal);
 		var config = calculateBorderMarginPaddingSize(style, "hbar");
-		console.log(config["hbar_xborder"] + parseSize(style['height']));
+		//console.log(config["hbar_xborder"] + parseSize(style['height']));
 		return config["hbar_xborder"] + parseSize(style['height']);
 	}
 }
@@ -678,9 +687,6 @@ function resizeBarAlreadyPresent(panel, orientation) {
 
 function getChild(element, className) {
 	//get all children of the element
-	if(element == null) {
-		console.log("Element is null while processing " + className);
-	}
 	var children = element.childNodes
 	for(i=0;i<children.length;i++) {
 		if(children.item(i).className && (children.item(i).className.search(className) > -1)) {
@@ -855,7 +861,10 @@ function MouseDragMonitor() {
 					this.dragme_h = document.getElementById("dragme_h");
 					this.dragme_h.style.height="8px";
 					this.dragme_h.style.width=prevNode.style.width;
-					this.dragme_h.style.top=(e.clientY) + "px";
+					
+					//console.log(whereAt(e) + " " + e.clientY);
+					//this.dragme_h.style.top=(e.clientY) + "px";
+					this.dragme_h.style.top=(whereAt(e)[1]) + "px";					
 					topPos = getPos(this.target);
 					this.dragme_h.style.left=topPos.x + "px";
 					this.dragme_h.style.display='block';
@@ -866,12 +875,13 @@ function MouseDragMonitor() {
 	
 	document.addEventListener("mousemove", function(e){
 		if(this.flag == 1) {
+			//console.log(whereAt(e));
 			if(contains(v_resizeBars, this.target.className)) {
 				stopDefault(e);				
 				this.dragme_v.style.left=(e.clientX - 3) + "px";
 			} else if(contains(h_resizeBars, this.target.className)) {
 				stopDefault(e);				
-				this.dragme_h.style.top=(e.clientY) + "px";			
+				this.dragme_h.style.top=(whereAt(e)[1]) + "px";			
 			}
 		}
 	}, false);
@@ -1269,6 +1279,28 @@ function stopDefault(e) {
     }
     return false;
 }
+
+//calculate screen height offset based upon browser
+function calculateScreenWidthOffset(screenwidth, marginPercent) {
+	return Math.round(screenwidth*(marginPercent/100))*2
+}
+
+var whereAt= (function(){
+    if(window.pageXOffset!= undefined){
+        return function(ev){
+            return [ev.clientX+window.pageXOffset,
+            ev.clientY+window.pageYOffset];
+        }
+    }
+    else return function(){
+        var ev= window.event,
+        d= document.documentElement, b= document.body;
+        return [ev.clientX+d.scrollLeft+ b.scrollLeft,
+        ev.clientY+d.scrollTop+ b.scrollTop];
+    }
+})()
+
+
 
 /*** JQUERY PLUGIN CODE BELOW **/
 /*(function($) {
