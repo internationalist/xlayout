@@ -75,9 +75,56 @@ Note: Above example assumes that you have placed the js file and the css in the 
 	</pre>
 	<h6>Example:</h6>
 	<p>Run the <a href="http://internationalist.github.io/xlayout/fixedsize.html" class="plainlink">example</a> to see how the layout is not resized when the browser window is resized.</p>
-		
+
+	<p>We can change the behavior to utilize the full screen and scale with browser resize if we change the argument to 'window'.</p>
+	<p>This is also the default option.</p>
+	<pre>
+	window.onload=function() {new Xlayout('container', 'window')};
+	</pre>
+
+	<h4>The configuration object.</h4>
+	<p>It is possible to specify configuration values to set the height and width of each individual panel.</p>
+	<p>Xlayout has default values for the sizes of each panel these are:</p>
+	<ul>
+		<li>Header - <strong>20%</strong></li>
+		<li>Footer - <span style="margin-left:7px;"><strong>20%</strong></span></li>
+		<li>West - <span style="margin-left:17px;"><strong>25%</strong></span></li>
+		<li>East - <span style="margin-left:19px;"><strong>25%</strong></span></li>
+	</ul>
+	<p>In Addition these are the other configuration options that Xlayout has default values for.</p>
+	<p>Some of these are:</p>
+	<ul>
+		<li><strong>resizable</strong> (You can set panels to be resizable or not default:true)</li>
+		<li><strong>resizebar</strong> (You can show or hide the resize bar default:true)</li>
+		<li><strong>border</strong> (You can add or remove borders from panels default:true)</li>
+	</ul>
+	<p>It is possible to override these default values. In this section we will show how this is to be done.
+	</p>
+	<p>Below is the complete code for a simple 3 pane panel with a footer, left menu and content</p>
+	<pre>
+	&lt;html&gt;
+		&lt;head&gt;
+			&lt;link rel="stylesheet" type="text/css" href="xlayout.css"/&gt;
+			&lt;script src="xlayout.js"&gt;&lt;/script&gt;
+			&lt;script&gt;
+				window.onload=function() {new Xlayout('container', 'window')};
+			&lt;/script&gt;
+		&lt;/head&gt;
+		&lt;body&gt;
+			&lt;div id="container" style="width:200px;height:200px;"&gt;
+			&lt;div class="hlayout_north"&gt; Header   &lt;/div&gt;
+			&lt;div class="hlayout_center"&gt;
+			&lt;div class="vlayout_west"&gt; West  &lt;/div&gt;
+			&lt;div class="vlayout_center"&gt; Body  &lt;/div&gt;
+			&lt;/div&gt;
+			&lt;/div&gt;
+		&lt;/body&gt;
+	&lt;/html&gt;		
+	</pre>
+	<p style="clear:both">You can see this example here:<a href="http://internationalist.github.io/xlayout/threepaneldefault.html" class="plainlink">Example</a> </p>
+	
   	
-  	<p> You can also programmatically hide and show header, footer west and east panels</p>
+<!--  	<p> You can also programmatically hide and show header, footer west and east panels</p>
   	<p>To do this first assign an id value</p>
 
         <pre>
@@ -105,7 +152,7 @@ Note: Above example assumes that you have placed the js file and the css in the 
   	<p>If you keep the js and the css files in the folders 'js' and 'style' and have the html files in the parent directory (exactly like it is in the repository) then the examples should work out of the box.</p>
   	 
   	<p>I am building a documentation web site that will have more detailed documentation and tutorials etc.</p>
-  	<p>Xlayout has considerable configuration and customization options that will be detailed on the site.</p>
+  	<p>Xlayout has considerable configuration and customization options that will be detailed on the site.</p>-->
   	
   	
   
