@@ -76,6 +76,10 @@ Note: Above example assumes that you have placed the js file and the css in the 
 		&lt;div class="hlayout_south"&gt; Footer  &lt;/div&gt;
 	&lt;/div&gt;
 	</pre>
+	<div>
+	<strong>Tip</strong>:The center panel in a layout is mandatory. All the panels of a layout have to be siblings
+	ie have to appear next to each other.
+	</div>
 	<h6>Javascript<h6>
 	<pre>
 	window.onload=function() {new Xlayout('placeholder', 'fixed')};
