@@ -122,6 +122,23 @@ Note: Above example assumes that you have placed the js file and the css in the 
 	&lt;/html&gt;		
 	</pre>
 	<p style="clear:both">You can see this example here:<a href="http://internationalist.github.io/xlayout/threepaneldefault.html" class="plainlink">Example</a> </p>
+	<h6>Changing panel default options</h6>
+	<p>Now we will change some of the default options. We want to change the header size to only about 5% of the height and also to remove any resize bars</p>
+	<p>To do this we change the javascript to the one below.</p>
+	<pre>
+	window.onload=function() {new Xlayout('container', 'window',
+		{
+			default:{
+				northheight:5,
+				resizebar:false
+			}
+		}
+	)};
+	</pre>
+	
+	<h6>Example<h6>
+	<p>You can see the example here:<a href="http://internationalist.github.io/xlayout/threepanelcustom.html" class="plainlink">Example</a> </p>
+		
 	
   	
 <!--  	<p> You can also programmatically hide and show header, footer west and east panels</p>
