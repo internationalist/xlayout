@@ -49,6 +49,7 @@ Note: Above example assumes that you have placed the js file and the css in the 
 	<pre>  
 	window.onload=function() {new Xlayout('container')};	
 	</pre>
+	<h6>Example<h6>
   	<p>This will give you a 5 panel vertical layout like <a href="http://internationalist.github.io/xlayout/fivepaneldefaultoptions.html">this</a><p>
   	
   	<h4>Fixed layout or scaling on browser resize</h4>
@@ -70,9 +71,9 @@ Note: Above example assumes that you have placed the js file and the css in the 
 	</pre>
 	<h6>Javascript<h6>
 	<pre>
-	window.onload=function() {new Xlayout('container', 'fixed')};
+	window.onload=function() {new Xlayout('placeholder', 'fixed')};
 	</pre>
-	
+	<h6>Example:</h6>
 	<p>Run the <a href="http://internationalist.github.io/xlayout/fixedsize.html" class="plainlink">example</a> to see how the layout is not resized when the browser window is resized.</p>
 		
   	
