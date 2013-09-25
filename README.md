@@ -32,21 +32,24 @@ Note: Above example assumes that you have placed the js file and the css in the 
 		<li>Safari 5.x and newer.</li>		
 		<li>Internet Explorer 9.x and newer</li>
 	</ul>      
-      <h5>Basic Usage</h5>
+      <h4>Creating a simple 5 panel layout</h5>
        <h6>HTML</h6>
        <pre>
-	&lt;div id="container"&gt;
-		&lt;div class="hlayout_north"&gt; Header &lt;/div&gt;
-		&lt;div class="hlayout_center"&gt;Center&lt;/div&gt;
-  		&lt;div class="hlayout_south"&gt; Footer &lt;/div&gt;	
-	&lt;/div&gt;
-
+		&lt;div id="container"&gt;
+			&lt;div class="hlayout_north"&gt; Header   &lt;/div&gt;
+			&lt;div class="hlayout_center"&gt;
+				&lt;div class="vlayout_west"&gt; West  &lt;/div&gt;
+				&lt;div class="vlayout_center"&gt; Body  &lt;/div&gt;
+				&lt;div class="vlayout_east"&gt; East  &lt;/div&gt;
+			&lt;/div&gt;
+			&lt;div class="hlayout_south"&gt; Footer  &lt;/div&gt;
+		&lt;/div&gt;
   	</pre>
   	<h6>Javascript</h6>
 	<pre>  
 	window.onload=function() {new Xlayout('container')};	
 	</pre>
-  	<p>This will give you a 3 panel vertical layout like <a href="http://i.imgur.com/IwKGkvP.jpg?1">this</a><p>
+  	<p>This will give you a 5 panel vertical layout like <a href="http://internationalist.github.io/xlayout/fivepaneldefaultoptions.html">this</a><p>
   	
   	<p> You can also programmatically hide and show header, footer west and east panels</p>
   	<p>To do this first assign an id value</p>
