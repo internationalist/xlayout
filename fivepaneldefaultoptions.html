@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="xlayout.css"/>
+	<script src="xlayout.js"></script>
+	<script>
+		var layout = null;
+		window.onload=function() {layout= new Xlayout('container');
+		 };
+		 
+		
+	</script>		
+</head>
+<body>
+	<div id="container">
+		<div class="hlayout_north" id="north"> 
+					<div id="northmenu_north" onmouseover=show('northmenu_south'); onmouseout=hide('northmenu_south'); class="hlayout_center">
+						Center					
+					</div>
+		</div>
+		<div class="hlayout_center">
+			<div class="vlayout_west" id="west">West</div>
+			<div class="vlayout_center">
+			Center
+</div>
+			<div class="vlayout_east" id="east">East</div>
+		</div>
+		<div class="hlayout_south" id="footer">Footer</div>
+	</div>
+</body>
+</html>
