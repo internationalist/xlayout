@@ -260,4 +260,26 @@ img {
     border:1px solid black;
     font-size:12px;
     text-align:center;
+    overflow:hidden;
+}
+
+.vertical_custom {
+    background: url("handle-v.png") no-repeat scroll 1px 50% transparent;
+    cursor: col-resize;
+    height: 100%;
+    width: 6px;
+	float:left;
+	background-color:#E6E6E6;
+    
+}
+
+.horizontal_custom {
+	background: url("toggle-ht.jpg") no-repeat scroll 50% 1px transparent;
+ 	cursor: row-resize;
+    height: 6px;
+    left: 0;
+	top: 0;
+    width: 100%;
+    background-color:#E6E6E6;
+ 
 }

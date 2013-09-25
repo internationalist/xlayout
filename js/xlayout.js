@@ -255,10 +255,15 @@ function viewport(container, mode){
 	var e = window, a = 'inner';
 	if(mode=="window") {
 		return { width : (e[ a+'Width' ]) , height : (e[ a+'Height' ])};
-	} else if(mode="fixed_window") {
+	} else if(mode=="fixed_window") {
 		container.style.marginLeft=(this.configParam.getConfig("lateralmarginfixedlayout", container.id)) + "%";
 		return {width:screen.width - calculateScreenWidthOffset(screen.width,
 				this.configParam.getConfig("lateralmarginfixedlayout", container.id)), height:(screen.height)}
+		
+	} else {
+		var style = window.getComputedStyle(container, null);
+		
+		return {width:parseSize(style["width"]), height:parseSize(style["height"])};
 	}
 	
 }
@@ -699,7 +704,7 @@ function createHBarsBeforeElement(hlayoutPanel, className, text) {
 
 function resizeBarAlreadyPresent(panel, orientation) {
 	var retPanel = null;
-	if(panel.previousSibling || panel.nextSibling) {
+/*	if(panel.previousSibling || panel.nextSibling) {
 		if((panel.previousSibling.className && panel.previousSibling.className==orientation)
 				||(panel.nextSibling.className && panel.nextSibling.className==orientation)) {
 			if(panel.previousSibling) {
@@ -708,7 +713,12 @@ function resizeBarAlreadyPresent(panel, orientation) {
 				retPanel = panel.nextSibling;
 			}
 		}
-	}
+	}*/
+	if(panel.previousSibling) {
+		if(panel.previousSibling.className==orientation) {
+			retPanel = panel.previousSibling;
+		}
+	}	
 	return retPanel;
 }
 
