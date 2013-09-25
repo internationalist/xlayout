@@ -51,6 +51,31 @@ Note: Above example assumes that you have placed the js file and the css in the 
 	</pre>
   	<p>This will give you a 5 panel vertical layout like <a href="http://internationalist.github.io/xlayout/fivepaneldefaultoptions.html">this</a><p>
   	
+  	<h4>Fixed layout or scaling on browser resize</h4>
+		<p>In the example above if we load the example page and then resize the browser window, notice how the layout changes automatically to fit the new size of the window.
+		Thus the layout 'scales' on browser window resize. This is the default behavior when we create the Xlayout object with only the placeholder argument.</p>
+		<p>However we can change this behavior and keep the layout fixed at a given height and width.</p>
+		<p>To do that we have to change the html to specify a height and width to the placeholder div.</p> 
+		
+	<pre>
+	&lt;div id="placeholder" style="width:200px;height:200px;"&gt;
+		&lt;div class="hlayout_north"&gt; Header   &lt;/div&gt;
+		&lt;div class="hlayout_center"&gt;
+			&lt;div class="vlayout_west"&gt; West  &lt;/div&gt;
+			&lt;div class="vlayout_center"&gt; Body  &lt;/div&gt;
+			&lt;div class="vlayout_east"&gt; East  &lt;/div&gt;
+		&lt;/div&gt;
+		&lt;div class="hlayout_south"&gt; Footer  &lt;/div&gt;
+	&lt;/div&gt;
+	</pre>
+	<h6>Javascript<h6>
+	<pre>
+	window.onload=function() {new Xlayout('container', 'fixed')};
+	</pre>
+	
+	<p>Run the <a href="http://internationalist.github.io/xlayout/fixedsize.html" class="plainlink">example</a> to see how the layout is not resized when the browser window is resized.</p>
+		
+  	
   	<p> You can also programmatically hide and show header, footer west and east panels</p>
   	<p>To do this first assign an id value</p>
 
