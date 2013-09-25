@@ -138,7 +138,7 @@ Note: Above example assumes that you have placed the js file and the css in the 
 	
 	<h6>Example<h6>
 	<p>You can see the example here:<a href="http://internationalist.github.io/xlayout/threepanelcustom.html" class="plainlink">Example</a> </p>
-		
+	<p>So what we did here was pass in a Json configuration object to override xlayout's internal defaults. We set the 'northheight' i.e the height of the header panel to 5% of the page height and also turned off all resize bars.</p>	
 	
   	
 <!--  	<p> You can also programmatically hide and show header, footer west and east panels</p>
