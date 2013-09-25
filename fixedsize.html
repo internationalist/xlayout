@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="xlayout.css"/>
+<script src="xlayout.js"></script>
+	<script>
+		window.onload=function() {new Xlayout('placeholder', 'fixed')};
+	</script>		
+</head>
+<body>
+	<div id="placeholder" style="width:400px; height:500px;margin-top:50px;margin-left:200px">
+	<h3>Example of Xlayout only applied to a portion of the page and having a fixed height and width.</h3>
+		<div class="hlayout_north"> Header</div>
+		<div class="hlayout_center">
+			<div class="vlayout_west">West</div>
+			<div class="vlayout_center">Body</div>
+			<div class="vlayout_east">East</div>
+		</div>
+		<div class="hlayout_south">Footer</div>
+	</div>
+</body>
+</html>
