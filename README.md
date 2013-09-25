@@ -52,6 +52,13 @@ Note: Above example assumes that you have placed the js file and the css in the 
 	<h6>Example<h6>
   	<p>This will give you a 5 panel vertical layout like <a href="http://internationalist.github.io/xlayout/fivepaneldefaultoptions.html">this</a><p>
   	
+  	<div>
+  	<strong>Tip</strong>:Panels are identified by certain pre defined values for the class attribute. All horizontal panel class names start
+  	with <code>hlayout_</code> and vertical ones with <code>vlayout_</code>. Each layout can have a maximum of three
+  	panels. For vertical the panel class names end with <code>north</code>, <code>center</code> and <code>south</code>
+  	and for horizontal they are <code>west</code>, <code>center</code> and <code>east</code>. 
+  	</div>
+  	
   	<h4>Fixed layout or scaling on browser resize</h4>
 		<p>In the example above if we load the example page and then resize the browser window, notice how the layout changes automatically to fit the new size of the window.
 		Thus the layout 'scales' on browser window resize. This is the default behavior when we create the Xlayout object with only the placeholder argument.</p>
