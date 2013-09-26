@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="xlayout.css"/>
+	<script src="xlayout.js"></script>
+	<script>
+		window.onload=function() {new Xlayout('container', 'window')};
+	</script>		
+</head>
+<body>
+<div id="container">
+<div id="header" class="hlayout_north"> Header </div>
+<div class="hlayout_center">
+	<div class="vlayout_west">
+	West.
+	</div>
+	<div class="vlayout_center">
+		<div class="hlayout_north">Inner North.</div>
+		<div class="hlayout_center">Center.</div>
+	</div>
+</div>
+<div id="footer" class="hlayout_south">Footer
+</div>
+</div> 
+</body>
+</html>
