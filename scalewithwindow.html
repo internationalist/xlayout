@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style/xlayout.css"/>
+<link rel="stylesheet" type="text/css" href="style/normalize.css"/>	
+	<script src="js/jquery-1.9.1.min.js"></script>
+	<script src="js/jquery-migrate-1.1.1.min.js"></script>
+	<script src="js/xlayout.js"></script>
+	<script>
+		window.onload=function() {new Xlayout('container', 'window')};
+	</script>		
+</head>
+<body>
+	<div id="container" style="width:500px; height:500px;margin-top:50px;margin-left:200px">
+		<div class="hlayout_north"> Header</div>
+		<div class="hlayout_center">
+			<div class="vlayout_west">West</div>
+			<div class="vlayout_center">Body</div>
+			<div class="vlayout_east">East</div>
+		</div>
+		<div class="hlayout_south">Footer</div>
+	</div>
+</body>
+</html>
