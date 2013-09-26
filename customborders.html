@@ -1,0 +1,55 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="xlayout.css"/>
+<script src="xlayout.js"></script>
+<script>
+var layout;
+window.onload=function() {
+
+	layout = new Xlayout('container', 'window',
+								{
+								default:{
+								northheight:5
+								},
+								west_main:{
+								northheight:70,
+						    	hbarclassname:"bigText_horizontal",
+								resizebartext:"Resize bar with custom text."								
+								},
+								west:{
+								vbarclassname:"vertical_custom"
+								},
+								north: {
+								hbarclassname:"horizontal_custom"
+								}
+					 });
+					 
+	
+						 
+}
+function hide(id) {
+	layout.hidePanel(id);
+}
+
+function show(id) {
+	layout.showPanel(id);
+}
+
+</script>
+</head>
+<body>
+<div id="container" style="width:200px;height:200px;">
+<div class="hlayout_north" id="north"> Header </div>
+<div class="hlayout_center">
+	<div id="west" class="vlayout_west"> 
+		<div id="west_main" class="hlayout_north"></div>
+		<div class="hlayout_center"></div>
+	</div>
+	<div class="vlayout_center"> 
+	
+	
+	 </div>
+</div>
+</div>
+</body>
+</html>
