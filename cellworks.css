@@ -1,0 +1,117 @@
+#header{
+	background-color:#2686B3;
+}
+
+#footer{
+	border-top:1px solid grey
+}
+
+.banner {
+	margin-left:47%;
+	font-weight:bold;
+	
+	font-size:20px;
+
+	color:white;
+}
+
+#menutree {
+	
+}
+
+#leftmenu {
+	border-right:1px solid grey;
+	border-top:1px solid grey;
+	font-size:15px;
+}
+
+#centercontent {
+	border-left:1px solid grey;
+	border-top:1px solid grey;
+}
+#contents {
+	border-bottom:1px solid grey;
+	background:url('../images/content_bkg.png') repeat-x scroll 0 50% #EEEEEE;
+	font-weight:bold;
+	text-align:center;
+}
+
+.plainlink {
+	text-decoration:none;
+}
+.democode {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+table
+{
+border-collapse:collapse;
+}
+table,th, td
+{
+border: 1px solid #8FB26B;
+padding:10px;
+}
+
+
+.highlight {
+	font-weight:bold;
+	font-style:italic;
+}
+.heading {
+	font-weight:bold;
+	font-style:italic;
+	font-size:20px;
+}
+.api {
+	background: linear-gradient(#DAFFB5, #DFFFBF) repeat scroll 0 0 transparent;
+	border:1px solid #8FB26B;
+	color:#52663D;
+	font-size:14px;
+	border-radius: 3px 3px 3px 3px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.config_line_item {
+	height:50px;
+	width:800px;
+}
+
+.config_label {
+	float:left;
+	width:150px;
+}
+
+.config_value {
+	float:right;
+	width:650px;
+}
+
+pre.code {
+    background-color: #333333;
+    border: 2px solid #DDDDDD;
+    color:#00B200;
+	font-size: 16px;
+	padding:10px;
+}
+
+.note {
+    background: linear-gradient(#D8EBF8, #D0E3EF) repeat scroll 0 0 transparent;
+    border: 1px solid #97C1DA;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: #264C72;
+    font-size: 12px;
+    margin: 0 auto;
+    padding: 15px;
+    position: relative;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+pre span.comment {
+color:#FFFFFF;
+}
+pre span.text {
+color:#FFFFC2
+}

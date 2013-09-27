@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="tree.css"/>	
+		<link rel="stylesheet" type="text/css" href="xlayout.css"/>
+		<link rel="stylesheet" type="text/css" href="normalize.css"/>
+		<link rel="stylesheet" type="text/css" href="cellworks.css"/>	
+    <!--[if lt IE 9]>
+    	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+    <![endif]-->				
+		<script src="jquery-1.9.1.min.js"></script>
+
+		<script src="xlayout.js"></script>
+		<script src="tree.js"></script>		
+		<script>
+		window.onpopstate = function(event) {
+		  console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+		};
+		 
+		 function afterClick(node) {
+			var docId = $(node).attr('id');
+			showIt(docId + "_doc");
+		}
+		
+		function afterOpen(node) {
+			console.log($(node));
+		}
+		
+		
+		function showIt(elID) {
+    		var el = document.getElementById(elID);
+    		if(el) {
+				var stateObj = { token: elID };
+				//handle the history 
+				history.pushState(stateObj, '', location.pathname + '?' + elID);   		
+	    		el.scrollIntoView(true);
+	    	}
+		}
+		 
+		$(document).ready(function() {
+			tree = $('#menutree').tree({onClick:afterClick,onOpen:afterOpen});
+			tree.openBranch('defaultconfig');
+			tree.openBranch('panelconfig');			
+			tree.openBranch('tutorial');
+			tree.openBranch('borderconfig');
+			
+			
+
+			var stateToken = null;
+			if(history.state) {
+				stateToken = history.state['token'];
+			}
+			
+			new Xlayout('body', 'window',{
+			 header:{
+			 	northheight:5,
+			 	resizable:true,
+			 	resizebar:false,
+			 	border:false
+			 	},
+			 footer:{
+			 	southheight:5,
+			 	resizable:false,
+			 	resizebar:false 
+			 	},
+			 contents:{
+			 	northheight:4,
+			 	resizable:false,
+			 	resizebar:false,
+			 },
+			 default:{
+			 	border:false
+			 }
+		 });
+		 
+		if(stateToken) {
+			stateToken = stateToken.substring(0, stateToken.indexOf("_doc"));
+			//console.log(stateToken);
+			tree.selectNode(stateToken);
+		} else {			
+			tree.selectNode('overview');
+		}		 
+		 
+		 
+		 
+		 			
+
+						
+		});		 
+		</script>		
+	</head>
+	<body>
+		<div id="header" class="hlayout_north">
+		<span class="banner">xLayouts</span>
+		</div>
+		<div class="hlayout_center">
+		<div id="leftmenu" class="vlayout_west">
+			<div id="contents" class="hlayout_north contents">Table of Contents</div>
+			<div class="hlayout_center">
+				<div id="menutree" style="padding:5px;">
+							<ul>
+								<li id="overview"><a>Overview</a>
+								</li>
+								<li id="browsers"><a>Supported Browsers</a>
+								</li>								
+								<li id="tutorial"><a>Tutorial</a>
+									<ul>
+										<li id="installation"><a>Installation</a>
+																		</li>									
+										<li id="firstExample"><a>Creating a simple five panel layout.</a></li>
+										<li id="handleresize"><a>Fixed layout or scaling on browser resize.</a></li>
+										<li id="defaultconfig"><a>The configuration object.</a>
+											<ul>
+												<li id="defaultoption"><a>Changing panel default options.</a></li>
+												<li id="configoptions"><a>List of all configuration options</a></li>
+											</ul>
+										</li>
+										<li id="panelconfig"><a>Configuring individual panels.</a>
+										</li>
+										<li id="borderconfig"><a>Adding or removing borders.</a>
+								  			<ul>
+												<li id="contentpanes"><a>The Content and Container panes.</a></li>
+												<li id="configborders"><a>Configuring borders</a></li>
+											</ul>
+										</li>
+										<li id="customresizebar"><a>Customizing the resize bars.</a></li>
+										<li id="openclose"><a>Opening and closing panels.</a></li>																				
+										<li id="nestingandstyle"><a>Nesting Layouts and styling panels.</a></li>
+									</ul>
+								</li>
+							</ul>
+				</div>		
+			</div>
+		</div>
+		<div id="centercontent" class="vlayout_center">
+			<div id="helpcontent" style="margin:20px;">
+	<h2 id="overview_doc">Overview</h2>
+	<p>Xlayout is a HTML, CSS layout manager for easy positioning of panels in a page.</p>
+	<p>It comes with two different layouts each consisting of a maximum of three panels.</p>
+	<ul>
+		<li>Horizontal layout</li>
+		<li>Vertical layout</li>
+	</ul>
+
+	<p>Horizontal layouts can consist of north, center and south panel.
+	Vertical layouts are made up of west, center and east panel</p>
+	<p>Following is an example of a 3 panel horizontal layout on the left and a 3 panel vertical layout besides it.<p>
+	<img src="../images/3panel_hlayout.png"></img> <img src="../images/3panel_vlayout.png"></img>
+	<p>Using Xlayout you can create such horizontal and vertical layouts very easily. Below is all the html that you will need to create such layouts when using Xlayout.</p>
+
+	<pre class="code">
+&lt;div class="hlayout_north"&gt;&lt;/div&gt;
+&lt;div class="hlayout_center"&gt;&lt;/div&gt;
+&lt;div class="hlayout_south"&gt;&lt;/div&gt;
+	</pre>
+	<h5>Horizontal layout</h5>
+	<pre class="code">
+&lt;div class="vlayout_west"&gt;&lt;/div&gt;
+&lt;div class="vlayout_center"&gt;&lt;/div&gt;
+&lt;div class="vlayout_east"&gt;&lt;/div&gt;
+	</pre>
+	<h5>Vertical layout</h5>
+
+	<div class="note">
+		<strong>Note</strong>: As of now Xlayout only supports <span class="highlight">div</span> as the html tag for panels.
+	</div>
+		<p>Xlayout allows for nesting of layouts. By nesting horizontal and vertical layouts together we can create traditional 5 panel page layouts consisting of header, footer, left menu and right menu.</p>
+		<p>To learn more about how to use Xlayout in your project and intermediate to advanced usage please refer to our tutorial.</p>
+	<h2 id="browsers_doc">Supported Browsers</h2>
+	<p>Xlayout has been tested to work with the following browsers</p>
+	<ul>
+		<li>Firefox 15.x and newer.</li>
+		<li>Chrome 21.x and newer.</li>
+		<li>Opera 11.x and newer.</li>
+		<li>Safari 5.x and newer.</li>		
+		<li>Internet Explorer 9.x and newer</li>
+	</ul>
+	<h2 id="tutorial_doc">Tutorial</h2>
+	<p>Welcome to the tutorial section of the Xlayout documentation. Here we will begin to learn how to use Xlayout to easily build page layouts. Since Xlayout allows for deep level nesting we can combine horizontal and vertical layouts together to achieve almost any arrangement that we can ever need. Best of all we can do all of this while writing very little CSS code.</p>
+	<h4 id="installation_doc">Installation</h4>
+	<p>To start using Xlayout download the file xlayout.js from <a class="plainlink" href="https://github.com/internationalist/xlayout/tree/master/js" target="_blank">here.</a></p>
+	<p>Also download the corresponding css file xlayout.css and the images toggle-lt.gif and toggle-ht.jpg from <a class="plainlink" href="https://github.com/internationalist/xlayout/tree/master/style" target="_blank">here.</a></p>
+	<p>In your html document add the link to the css file</p>
+<pre class="code">
+&lt;link rel="stylesheet" type="text/css" href="xlayout.css"/&gt;
+</pre>
+	<p>and then a script tag for the javascript.</p>
+<pre class="code">
+&lt;script src="xlayout.js"&gt;&lt;/script&gt;
+</pre>
+	<h4 id="firstExample_doc">Creating a simple five panel layout.</h4>
+	<p>In this section we will create a simple 5 panel layout using the xlayout system. A five panel layout typically consists of a header and footer, left and right menus and a main body.</p>
+	<p>For doing this we first add the html required to create a 3 panel horizontal layout</p>
+	<pre class="code">
+&lt;div id="container"&gt;
+  &lt;div class="hlayout_north"&gt;Header &lt;/div&gt;
+  &lt;div class="hlayout_center"&gt;Body&lt;/div&gt;
+  &lt;div class="hlayout_south"&gt;Footer&lt;/div&gt;
+&lt;/div&gt;
+	</pre>
+	<div class="note">
+		<strong>Note</strong>:
+		Panels are identified by certain pre defined values for the class attribute. All horizontal panel class names start with <span class="highlight">hlayout_</span> and vertical ones with <span class="highlight">vlayout_</span>
+		<p>Each layout can have a maximum of three panels. For vertical the panel class names end with <span class="highlight">north</span>, <span class="highlight">center</span> and <span class="highlight">south</span> and for horizontal they are 
+		<span class="highlight">west</span>, <span class="highlight">center</span> and <span class="highlight">east</span>.</p> 
+	</div>
+	<p>Next we need to create a left and right menu. To do this we nest a vertical layout inside the above horizontal one.
+	Our html will look like below.</p>
+	
+	<pre class="code">
+&lt;div id="container"&gt;
+	&lt;div class="hlayout_north"&gt;Header&lt;/div&gt;
+	&lt;div class="hlayout_center"&gt;
+		&lt;div class="vlayout_west"&gt;West&lt;/div&gt;
+		&lt;div class="vlayout_center"&gt;Body&lt;/div&gt;
+		&lt;div class="vlayout_east"&gt;East&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class="hlayout_south"&gt;Footer&lt;/div&gt;
+&lt;/div&gt;
+	</pre>
+			<div class="note">
+		<strong>Note:</strong> In this code sample we have nested a vertical layout inside the center component of a horizontal. 
+		<p>Only the center panel in a layout is mandatory. All the panels of a layout have to be siblings and have to appear next to each other.</p> 
+	</div>
+	<p style="clear:both;margin-top:5px;">Finally we write the javascript to initiate Xlayout.</p>
+
+	<pre class="code">
+&lt;script&gt;
+	window.onload=function() {new Xlayout('container')};
+&lt;/script&gt;
+	</pre>
+	<div class="note">
+		<strong>Note</strong>: Always make sure that you instantiate the Xlayout object after the page loads.
+		<p>You can do this by adding a listener to the <span class="highlight">window.onload</span> or <span class="highlight">body.onload</span>.</p>
+		<p>If you are using jquery then you can instantiate Xlayout inside the  <span class="highlight">$(document).ready(function()</span></p> 			
+	</div>
+	<p>That is all the code that one needs to create a basic 5 panel layout using Xlayout.</p>
+	<p>Of course this is using all default options and there are quite a few ways to configure the behavior.</p>
+	<p>We will go into that in the later sections. For now check out the <a href="http://internationalist.github.io/xlayout/fivepaneldefaultoptions.html" class="plainlink">example</a>.</p>
+	<h2 id="handleresize_doc">Fixed layout or scaling on browser resize.</h2>
+		<p>In the example above if we load the example page and then resize the browser window, notice how the layout changes automatically to fit the new size of the window.
+		Thus the layout 'scales' on browser window resize. This is the default behavior when we create the Xlayout object with only the placeholder argument.</p>
+		<p>However we can change this behavior and keep the layout fixed at a given height and width.</p>
+		<p>To do that we have to change the html to specify a height and width to the placeholder div.</p>
+	<pre class="code">
+&lt;div id="placeholder" <span class="highlight">style="width:200px;height:200px;"</span>&gt;
+	&lt;div class="hlayout_north"&gt;Header&lt;/div&gt;
+	&lt;div class="hlayout_center"&gt;
+		&lt;div class="vlayout_west"&gt;West&lt;/div&gt;
+		&lt;div class="vlayout_center"&gt;Body&lt;/div&gt;
+		&lt;div class="vlayout_east"&gt;East&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div class="hlayout_south"&gt;Footer&lt;/div&gt;
+&lt;/div&gt;
+	</pre>
+	
+	<p>and we make the following change to the javascript:</p>
+	<pre class="code">
+&lt;script&gt;
+	window.onload=function() {new Xlayout('container', 'fixed')};
+&lt;/script&gt;
+	</pre>
+	<p>Run the <a href="http://internationalist.github.io/xlayout/fixedsize.html" class="plainlink">example</a> to see how the layout is not resized when the browser window is resized.</p>
+	<p>We can change the behavior to utilize the full screen and scale with browser resize if we change the argument to 'window'.</p>
+	<p>This is also the default option.</p>
+	<pre class="code" style="width:500px;">
+&lt;script&gt;
+	window.onload=function() {new Xlayout('container', 'window')};
+&lt;/script&gt;
+	</pre>
+	<p style="margin-left:20px;"><a href="http://internationalist.github.io/xlayout/scalewithwindow.html" class="plainlink">Example.</a></p>
+	
+	<h2 id="defaultconfig_doc">The configuration object.</h2>
+	<p>It is possible to specify configuration values to set the height and width of each individual panel.</p>
+	<p>Xlayout has default values for the sizes of each panel these are:</p>
+	<ul>
+		<li>Header - 20%</li>
+		<li>Footer - <span style="margin-left:7px;">20%</span></li>
+		<li>West - <span style="margin-left:17px;">25%</span></li>
+		<li>East - <span style="margin-left:19px;">25%</span></li>
+	</ul>
+	
+	<p>In Addition these are the other configuration options that Xlayout has default values for.</p>
+	<p>Some of these are:</p>
+	<ul>
+		<li>resizable (You can set panels to be resizable or not default:<span class="highlight">true</span>)</li>
+		<li>resizebar (You can show or hide the resize bar default:<span class="highlight">true</span>)</span></li>
+		<li>border (You can add or remove borders from panels default:<span class="highlight">true</span>)</li>
+	</ul>
+	<p>It is possible to override these default values. In this section we will show how this is to be done.
+	</p>
+	<p>Below is the complete code for a simple 3 pane panel with a footer, left menu and content</p>
+	<pre class="code">
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;link rel="stylesheet" type="text/css" href="xlayout.css"/&gt;
+    &lt;script src="xlayout.js"&gt;&lt;/script&gt;				
+    &lt;script&gt;
+      window.onload=function() {new Xlayout('container', 'window')};
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;						
+    &lt;div id="container"&gt;
+      &lt;div class="hlayout_north"&gt; Header   &lt;/div&gt;
+      &lt;div class="hlayout_center"&gt;
+        &lt;div class="vlayout_west"&gt; West  &lt;/div&gt;
+        &lt;div class="vlayout_center"&gt; Body  &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+	</pre>
+	<div class="note">
+		<strong>Note:</strong>
+		In this example we are only using header and center pane for the horizontal and a west and center for the vertical layout.
+		<p>Each layout set only has center panel as mandatory. So in theory you can create a layout with only one pane though this has to be a center panel.</p>
+	</div>
+	<p>You can see this example here:<a href="http://internationalist.github.io/xlayout/threepaneldefault.html" class="plainlink">Example</a> </p>	 			
+	<h3 id="defaultoption_doc">Changing panel default options.</h3>
+	<p>Now we will change some of the default options. We want to change the header size to only about 5% of the height and also to remove any resize bars</p>		
+	<p>To do that we change the javascript to the one below.</p>		
+	<pre class="code">
+&lt;script&gt;
+  <span class="comment">/*A json object to override two of the default configuration options*/</span>
+  window.onload=function() {new Xlayout('container', 'window', 
+  {
+	default:{
+	  northheight:5,
+	  resizebar:false
+	}
+  })};
+&lt;/script&gt;
+	</pre>
+	<p>You can see the example here:<a href="http://internationalist.github.io/xlayout/threepanelcustom.html" class="plainlink">Example</a> </p>
+	<h3 id="configoptions_doc">List of all configuration options</h3>
+	<p>Below is a list of all the options and also the panels on which they take effect.</p>
+	<div class="api">
+		<table>
+		<tr><th>Name</th><th>Description</th></tr>
+		<tr><td><strong>northheight</strong>:</td><td>The height of a header panel as a percentage of its container. (Header panels only)</td></tr>
+		<tr><td><strong>southheight</strong>:</td><td>The height of a footer panel as a percentage of its container. (Footer panels only)</td></tr>
+		<tr><td><strong>westwidth</strong>:</td><td>The width of the left panel as a percentage of its container.(West panels only)</td></tr>
+		<tr><td><strong>eastwidth</strong>:</td><td>The width of the right panel as a percentage of its container. (East panels only)</td></tr>
+		<tr><td><strong>resizable</strong>:</td><td>True|False Set to true to make panels resizable.(No effect on centre panels)</td></tr>
+		<tr><td><strong>resizebar</strong>:</td><td>True|False Set to true to have the resize bar appear.(No effect on centre panels)</td></tr>
+		<tr><td><strong>border</strong>:</td><td>True|False Set to true to have borders appear around the panels.</td></tr>
+		<tr><td><strong>hbarclassname</strong>:</td><td>The css classname of the horizontal resize bar. You can specify any other CSS class in place of this if you want to customize the resize bar. Default value is: "horizontal"(Header and Footer panels only)</td></tr>
+		<tr><td><strong>vbarclassname</strong>:</td><td>The css classname of the vertical resize bar. You can specify any other CSS class in place of this if you want to customize the resize bar. Default value is: "vertical"(West and East panels only)</td></tr>
+		<tr><td><strong>resizebartext</strong>:</td><td>If you want to put some text on the resizebar. There is no default value.(Header, Footer, West and East panels)</td></tr>
+		</table>		
+		</div>
+	<h2 id="panelconfig_doc">Configuring individual panels</h2>
+	<p>You can override the above options for specific panels. In this section we will see how to do that.</p>
+	<p>Let us begin with an example page like the following:</p>
+		<pre class="code">
+&lt;html&gt;
+	&lt;head&gt;
+		&lt;link rel="stylesheet" type="text/css" href="style/xlayout.css"/&gt;
+		&lt;script src="js/xlayout.js"&gt;&lt;/script&gt;
+		&lt;script&gt;
+			window.onload=function() {new Xlayout('container', 'window')};
+		&lt;/script&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		&lt;div id="container"&gt;
+			&lt;div class="hlayout_north"&gt;Header &lt;/div&gt;
+			&lt;div class="hlayout_center"&gt;
+				&lt;div class="vlayout_west"&gt;West.&lt;/div&gt;
+				&lt;div class="vlayout_center"&gt;
+					&lt;div class="hlayout_north"&gt;Inner North.&lt;/div&gt;
+					&lt;div class="hlayout_center"&gt;Center.&lt;/div&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+			&lt;div class="hlayout_south"&gt;Footer&lt;/div&gt;
+		&lt;/div&gt;			
+	&lt;/body&gt;			
+&lt;/html&gt;
+		</pre>
+		<div class="note">
+			<strong>Note</strong>:This is an example of a three level nesting. A horizontal layout contains a vertical 2 panel layout which in turn contains a 2 panel horizontal layout.
+		</div>
+	<p>Check out the <a href="http://internationalist.github.io/xlayout/custompaneldefault.html" class="plainlink">example</a> of the above code</p>
+	<p>Now suppose we want to change some of the default sizes of the panels.</p>
+	<p>Mainly we would like to narrow the header and footers and also remove the resize bars from them. We would also like to remove the resize bar between the Inner north and center panel.</p>
+	<p>For this we add id values to the panels we want to customize.</p>
+	<pre class="code">
+&lt;div id="container"&gt;
+	&lt;div <span class="highlight">id="header"</span> class="hlayout_north"&gt;Header &lt;/div&gt;
+	&lt;div class="hlayout_center"&gt;
+		&lt;div class="vlayout_west"&gt;West.&lt;/div&gt;
+		&lt;div class="vlayout_center"&gt;
+			&lt;div <span class="highlight">id="inner_north"</span> class="hlayout_north"&gt;Inner North.&lt;/div&gt;
+			&lt;div class="hlayout_center"&gt;Center.&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div <span class="highlight">id="footer"</span> class="hlayout_south"&gt;Footer&lt;/div&gt;
+&lt;/div&gt;			
+	</pre>	
+	<p>Finally we change the javascript to specify the configuration for each panel.</p>
+	<pre class="code">
+window.onload=function() {
+	new Xlayout('container', 'window',
+	<span class="comment">/*A json object having key value as ids of the panels to override the default configuration options*/</span>	
+	{
+
+	<span class="highlight">
+		header:{
+			northheight:5,
+			resizebar:false
+		},
+		footer:{
+			southheight:5,
+			resizebar:false
+		},
+		inner_north:{
+			resizebar:false
+		}
+	</span>
+	}
+)};		
+	</pre>
+		<div class="note">
+		<strong>Note:</strong>A point to note is that the options <span class="highlight">northheight, southheight, westwidth and eastwidth</span> will only work on header, footer, west and east panels.
+		Also the option <span class="highlight">resizebar</span> only works on header, footer,west and east panels.
+	</div>	
+	<p>You can see the example <a href="http://internationalist.github.io/xlayout/custompanel.html" class="plainlink">here</a>:</p>
+	<h2 id="borderconfig_doc">Adding or removing borders.</h2>
+	<p>Before going into learning how to add or remove borders lets look at the concept of 'container' and 'content' panes.</p>
+	<h2 id="contentpanes_doc">The Content and Container panes.</h2>
+	<p>You can nest layouts inside of each of the header, footer, center, west and east panels.</p>
+	<p>Xlayout considers any pane that contains another layout as a <span class="highlight">'container'</span> pane.</p>
+	<p>On the other hand any pane that does not have another layout nested inside is called a <span class="highlight">'content'</span> pane.</p>
+	<p>It is not possible to specify CSS style elements to container panes. The reason for this is CSS styles will interfere with the alogrithm of laying out the nested panels.
+	<p>'Content' panes on the other hand can be styled as much as you want.</p>
+	<p>The same goes for borders, the default borders only appear around <span class="highlight">content</span> panes and the configuration option <span class="highlight">border</span> only applies for them.</p>
+	</p>
+	<p>For the purpose of illustration we look at the example above with 3-level nesting but this time with helpful inline comments marking out the container and content panes</p>
+		<pre class="code">
+&lt;div id="container"&gt;
+	<span class="comment">&lt;!--Content pane.--&gt;</span>
+	&lt;div class="hlayout_north"&gt;<span class="text">Header</span> &lt;/div&gt;
+	<span class="comment">&lt;!--Container pane.--&gt;</span>
+	&lt;div class="hlayout_center"&gt;
+		<span class="comment">&lt;!--Content pane.--&gt;</span>
+		&lt;div class="vlayout_west"&gt;<span class="text">West</span>&lt;/div&gt;
+		<span class="comment">&lt;!--Container pane.--&gt;</span>
+		&lt;div class="vlayout_center"&gt;
+			<span class="comment">&lt;!--Content pane.--&gt;</span>
+			&lt;div class="hlayout_north"&gt;<span class="text">Inner North</span>&lt;/div&gt;
+			<span class="comment">&lt;!--Content pane.--&gt;</span>
+			&lt;div class="hlayout_center"&gt;<span class="text">Center</span>&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	<span class="comment">&lt;!--Content pane.--&gt;</span>
+	&lt;div class="hlayout_south"&gt;<span class="text">Footer</span>&lt;/div&gt;
+&lt;/div&gt;			
+		</pre>	
+	<h2 id="configborders_doc">Configuring borders</h2>
+	<p>Next we will look into how to add some custom borders to the panels.</p>
+	<p>We will start with the example that we last had. Here it is once more: <a href="custompanel.html" class="plainlink">custompanel</a></p>
+	<p>We add two more id elements to the west panel and the center. Notice that both of these are <span class="highlight">'content'</span> panels</p>
+	<pre class="code">
+&lt;div id="container"&gt;
+	&lt;div id="header" class="hlayout_north"&gt;Header &lt;/div&gt;
+	&lt;div class="hlayout_center"&gt;
+		&lt;div class="vlayout_west" <span class="highlight">id="west"</span>&gt;West.&lt;/div&gt;
+		&lt;div class="vlayout_center"&gt;
+			&lt;div id="inner_north" class="hlayout_north"&gt;Inner North.&lt;/div&gt;
+			&lt;div class="hlayout_center" <span class="highlight">id="center"</span>&gt;Center.&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div id="footer" class="hlayout_south"&gt;Footer	&lt;/div&gt;
+&lt;/div&gt;			
+	</pre>
+	<p>Next we change the initialization code to turn off the borders:</p>
+<pre class="code">
+window.onload=function() {<br/>new Xlayout('container', 'window',
+	{
+		header:{
+			northheight:5,
+			resizebar:false
+			<span class="highlight">border:false</span>				
+		},
+		footer:{
+			southheight:5,
+			<span class="highlight">resizebar:false</span>
+		},
+		inner_north:{
+			resizebar:false
+		},
+		<span class="highlight">west:{</span>
+			<span class="highlight">border:false</span>
+		<span class="highlight">},</span>
+		<span class="highlight">center:{</span>
+			<span class="highlight">border:false</span>
+		<span class="highlight">}</span>			
+				
+	}
+)};		
+	</pre>
+	<p style="clear:both;">This will remove the default borders around the header, west and center panels.</p>
+	<p>We can then use css to customize borders around the panels. An example of this follows. Use right-click 'view source' to take a look at the kind styles used</p>
+	<a href="http://internationalist.github.io/xlayout/custompanelandborders.html" class="plainlink">Example</a>
+	<h2 id="customresizebar_doc">Customizing the resize bars.</h2>
+	<p>It is easy to customize the look and feel of the resize bars. By default the vertical bar uses the css class "vertical" and the horizontal bar "horizontal".</p>
+	<p>The classes are defined in the file xlayout.css .</p>
+	<p>Below is a very simple example customizing a horizontal resize bar:</p>
+		<pre class="code">	
+window.onload=function() {
+new Xlayout('container', 'window',
+			{
+			header:{
+				northheight:5,
+				<span class="highlight">hbarclassname:"&lt;Your css class name.&gt;"</span>
+				<span class="highlight">resizebartext:"Custom text"</span>
+				}
+						
+			}
+)};
+		</pre>
+	<pre class="code">	
+&lt;div id="container"&gt;
+	&lt;div id="header" class="hlayout_north"&gt;Header &lt;/div&gt;
+	&lt;div class="hlayout_center"&gt;Center&lt;/div&gt;
+	&lt;div id="footer" class="hlayout_south"&gt;Footer&lt;/div&gt;
+&lt;/div&gt;			
+	</pre>
+		<p>As you can see it is possible to have a text value appear inside the bar by specifying a value for the configuration option: <span class="highlight">resizebartext</span></p>
+		<p>For customizing the vertical bars specify a css class name with the config option: <span class="highlight">vbarclassname</span> inside a vertical west or east panel config and to customize a horizontal resize bar use the 
+		option <span class="highlight">hbarclassname</span> inside a horizontal header or footer panel config.</p>
+		<div class="note">
+			<strong>Note:</strong> A point to note is that customizing resize bars cannot be done by specifying the config of center panels. 
+		</div>
+		<p>You can check out an example of customized resize bars <a href="http://internationalist.github.io/xlayout/customborders.html" class="plainlink">here</a></p>
+		<p>Be sure to check out the code by clicking on 'view-source'</p>
+		<h2 id="openclose_doc">Opening and closing panels</h2>
+		You can open and close any panel other then a center panel by calling a function. This is relatively easy to do.
+		<pre class="code">	
+var layout = null;
+window.onload=function() {
+	layout = new Xlayout('container');
+}
+layout.hidePanel("&lt;id value of panel&gt;");
+layout.showPanel("&lt;id value of panel&gt;");
+		</pre>
+		<p>As seen in the code sample above, you can hide a panel by calling the function hidePanel on the xlayout object and passing in the id value of the panel to be hidden.</p>
+		<p>For showing panels call the function showPanel while passing in the id value.</p>
+		<p>A more detailed example of showing and hiding panels is linked <a href="http://internationalist.github.io/xlayout/openandclosepanels.html" class="plainlink">here</a></p>
+		<h2 id="nestingandstyle_doc">Nesting Layouts and styling panels.</h2>
+		<p>You can nest xlayout inside any panel. You can also nest upto any level you want.</p>
+		<p>You are free to apply your own css styles to any 'content' panel. Be careful with 'position' and height, width css rules as these may interfere with xlayout algorithm.</p>
+		<p>An example showing nesting and styling panels is linked <a href="http://internationalist.github.io/xlayout/complexlayout.html" class="plainlink">here</a></p>
+		
+	</div> <!-- helpcontent -->
+ 		</div>		
+		</div>
+	</body>
+</html>

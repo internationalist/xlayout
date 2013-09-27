@@ -1,0 +1,74 @@
+.unselectable {
+-moz-user-select: none;
+-khtml-user-select: none;
+-webkit-user-select: none;
+user-select: none;
+/*
+ Introduced in IE 10.
+ See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+*/
+-ms-user-select: none;	
+}
+
+ul.tree, ul.tree ul { /*CSS for Simple Tree Menu*/
+list-style-type: none;
+ #background: url(../images/vline.png) repeat-y;
+ margin: 0;
+ padding: 0;
+ 
+}
+ul.tree ul {
+	margin-left: 5px;
+}
+
+ ul.tree li {
+ padding: 0 10px;
+ line-height: 20px;
+ list-style-type:none;
+ }
+ 
+ a.selected {
+ font-weight: bold;
+ }
+ 
+li a { cursor: hand; cursor: pointer;font-size:15px;}
+
+li a {margin-left:5px;}
+
+
+ul.tree a:hover {background-color:#D1E1E8;}
+
+.toggle {cursor: hand; cursor: pointer;}
+
+ul.tree a {
+#padding-left:17px;
+padding-bottom:5px;
+#background: url(../images/closed.gif) no-repeat;
+}
+
+a.open {
+#background: url(../images/open.gif) no-repeat;
+}
+
+a.close {
+#background: url(../images/closed.gif) no-repeat;
+}
+/*ul.tree li.childless a {
+background: url(../file.png) no-repeat;
+}*/
+ 
+ ul.tree li.childless {
+  #background: url(../images/node.png) no-repeat;
+ }
+ 
+ ul.tree li.parent {
+  #background: url(../images/node-parent.png) no-repeat;
+ } 
+ 
+ ul.tree li.last {
+  #background: #fff url(../images/lastnode.png) no-repeat;
+ }
+ 
+ ul.tree li.lastParent {
+  #background: #fff url(../images/lastnode-parent.png) no-repeat;
+ }
