@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="xlayout.css"/>
+<script src="xlayout.js"></script>
+	<script>
+		window.onload=function() {new Xlayout('container', 'window',
+		 {
+			 header:{
+			 	northheight:5,
+			 	resizable:true,
+			 	resizebar:false
+			 	},
+			 footer:{
+			 	southheight:5,
+			 	resizable:true,
+			 	resizebar:false 
+			 	},
+			 menu:{
+			 	westwidth:7
+			 },
+			 innernorth:{
+			 	northheight:50,
+		    	hbarclassname:"bigText_horizontal",
+				resizebartext:"Below Lies Big Text"
+			 },
+			 default:{
+			 	border:false
+			 }
+		 })};
+	</script>		
+</head>
+<body>
+<!-- <div style="height:20px;"></div>
+<div style="position:fixed;z-index:1000;height:20px;width:100%;top:0;background-color:yellow;">Static menu here</div> -->
+<div id="container">
+<div id="header" class="hlayout_north" style="background-color:blue;color:white;">
+<span>Main Title of Web Page</span>
+</div>
+<div id="horiz_center_container" class="hlayout_center">
+	<div id="menu" class="vlayout_west" style="border:5px solid green;overflow:auto;">
+		<b>Menu</b><br/>
+		HTML<br/>
+		CSS<br/>
+		JavaScript
+	</div>
+	<div id="content" class="vlayout_center">
+			<div class="hlayout_north">
+			Inner North
+			</div>
+			<div class="hlayout_center border">
+				<div class="vlayout_west">
+				Inner West
+				</div>
+				<div id="bigText_parent" class="vlayout_center" style="overflow:auto;">
+					<div id="innernorth" class="hlayout_north break">
+						<div class="vlayout_west">
+						North West
+						</div>
+						<div class="vlayout_center">
+							<div class="hlayout_north">
+								Innermost North
+							</div>
+							<div class="hlayout_center">
+								Innermost South
+							</div>
+						</div>
+						<div class="vlayout_east">
+							Innermost North East
+						</div>
+					</div>
+					<div class="hlayout_center border" id="bigtext" style="z-index:-1000;border:5px solid orange;">
+											Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+
+The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
+
+There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.
+	
+	paragraphs
+	words
+	bytes
+	lists
+	
+Start with 'Lorem
+ipsum dolor sit amet...'
+ 
+Design Your Website
+Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+
+The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
+
+There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.
+	
+	paragraphs
+	words
+	bytes
+	lists
+	
+Start with 'Lorem
+ipsum dolor sit amet...'
+ 
+Design Your Website
+Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+
+The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
+
+There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.
+	
+	paragraphs
+	words
+	bytes
+	lists
+	
+Start with 'Lorem
+ipsum dolor sit amet...'
+ 
+Design Your Website
+					</div>	
+				</div>	
+				<div class="vlayout_east">
+					<div class="hlayout_north">
+						Inner Right Menu Innermost Top.
+					</div>
+					<div class="hlayout_center">
+						Inner Right Menu Innermost Center.					
+					</div>					
+					
+				</div>
+			</div>	
+			<div class="hlayout_south" style="border:5px solid purple;background-color:violet;">
+				Inner South.
+			</div>
+	</div>	
+	<div class="vlayout_east" id="right-menu" style="border:5px solid yellow;background-color:green;">
+	Right Menu.
+	</div>
+</div>	
+<div id="footer" class="hlayout_south">
+Copyright stuff goes here.
+</div>
+</div>
+</body>
+</html>
+
+
+	
