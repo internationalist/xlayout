@@ -16,6 +16,7 @@ Note: Above example assumes that you have placed the js file and the css in the 
 
 
 <h2>Tutorial<h2>
+You can read the wall of text below or you can visit my tutorial <a href="http://internationalist.github.io/xlayout/doc.html">website</a> right here on Github!
 ==========
 <ul>
  <li>
