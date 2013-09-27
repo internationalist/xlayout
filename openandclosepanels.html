@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="xlayout.css"/>
+<script src="xlayout.js"></script>
+	<script>
+		var layout = null;
+		window.onload=function() {layout= new Xlayout('container','window',
+		 {
+		  northmenu_south:{resizebar:false,southheight:50},
+		  north:{northheight:10,resizebar:false},west:{resizebar:false}
+		  }
+		 );
+		 layout.hidePanel('northmenu_south');
+		 };
+		 
+		
+function hide(id) {
+	layout.hidePanel(id);
+}
+
+function show(id) {
+	layout.showPanel(id);
+}
+	</script>		
+</head>
+<body>
+	<div id="container">
+		<div class="hlayout_north" id="north"> 
+					<div id="northmenu_north" onmouseover=show('northmenu_south'); onmouseout=hide('northmenu_south'); class="hlayout_center">
+						Center					
+					</div>
+					<div id="northmenu_south" onmouseover=show('northmenu_south'); onmouseout=hide('northmenu_south');  class="hlayout_south" style="background-color:#E6E6E6;">
+						South
+					</div>
+		</div>
+		<div class="hlayout_center">
+			<div class="vlayout_west" id="west">West</div>
+			<div class="vlayout_center">
+	<input type="button" value="Hide Header" id="hideheader" onclick="hide('north');"></input>
+	<input type="button" value="Show Header" id="showheader" onclick="show('north');"></input>
+	<input type="button" value="Hide West Menu" id="hidewmenu" onclick="hide('west');"></input>
+	<input type="button" value="Show West Menu" id="showwmenu" onclick="show('west');"></input>
+	<input type="button" value="Hide East Menu" id="hideemenu" onclick="hide('east');"></input>
+	<input type="button" value="Show East Menu" id="showemenu" onclick="show('east');"></input>
+	<input type="button" value="Hide Footer" id="hidefooter" onclick="hide('footer');"></input>
+	<input type="button" value="Show Footer" id="showfooter" onclick="show('footer');"></input>
+
+</div>
+			<div class="vlayout_east" id="east">East</div>
+		</div>
+		<div class="hlayout_south" id="footer">Footer</div>
+	</div>
+</body>
+</html>
