@@ -31,7 +31,7 @@
 }
 #contents {
 	border-bottom:1px solid grey;
-	background:url('../images/content_bkg.png') repeat-x scroll 0 50% #EEEEEE;
+	/*background:url('../images/content_bkg.png') repeat-x scroll 0 50% #EEEEEE;*/
 	font-weight:bold;
 	text-align:center;
 }
