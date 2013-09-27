@@ -68,15 +68,15 @@ var selected;
 				span.className = "toggle";
 				//next create an image element inside of this
 				var img = document.createElement("img");
-				img.src="../images/icon_tree_on.gif";				
+				img.src="icon_tree_on.gif";				
 				img.addEventListener("click", 
 						function(event){
 							if($(child).is(":hidden")) {
 								openFolderGraphic(clickable);
-								img.src="../images/icon_tree_off.gif"								
+								img.src="icon_tree_off.gif"								
 							} else {
 								closeFolderGraphic(clickable);
-								img.src="../images/icon_tree_on.gif";								
+								img.src="icon_tree_on.gif";								
 							}					
 							$(child).toggle(180);
 							$.fn.callBackAfterOpenBranch(liElement);							
@@ -149,7 +149,7 @@ function openNode(node) {
 		openFolderGraphic(clickable);
 		icon = getFirstChildByTag($(node)[0], "SPAN");
 		img = getFirstChildByTag(icon, "IMG");
-		img.src = "../images/icon_tree_off.gif";
+		img.src = "icon_tree_off.gif";
 		var child = $(node).children('ul')[0];	
 		$(child).show(180);		
 		return false;
@@ -161,7 +161,7 @@ function openNode(node) {
 			//get children of this class and open them.
 			var child = $(node).children('ul')[0];	
 			$(child).show(180);
-			img.src = "../images/icon_tree_off.gif";			
+			img.src = "icon_tree_off.gif";			
 		}
 		if($(parent).is(":hidden")) {
 			$(parent).show(180);
