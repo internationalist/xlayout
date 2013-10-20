@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style/xlayout.css"/>
+<link rel="stylesheet" type="text/css" href="style/normalize.css"/>	
+	<script src="js/jquery-1.9.1.min.js"></script>
+	<script src="js/jquery-migrate-1.1.1.min.js"></script>
+	<script src="js/xlayout.js"></script>
+	<script>
+		var layout = null;
+		window.onload=function() {
+		layout = new Xlayout('container', 'window',
+		{
+			header:{
+				northheight:5,
+				resizebar:false,
+			},
+			footer:{
+				southheight:5,
+				resizebar:false,
+			},
+			west:{
+				onHide:westCollapse,
+				onShow:westRise,
+				vbarclassname:"mainWestResizeBar",
+				resizebarclick:clicked
+			}
+			
+		});
+		var el = document.querySelector(".mainWestResizeBar");
+		//var el = document.querySelector("#test");		
+	
+		};
+
+		
+		function westCollapse(e) {
+			var el = document.querySelector(".mainWestResizeBar");
+			console.log(el);
+		}
+		function westRise(e) {
+		}
+		function clicked(e) {
+			console.log('hello');
+			element = document.getElementById('west');
+			if(element.style.display=='none') {
+				e.style.backgroundImage = 'url("toggle-lt.gif")';
+				layout.showPanel('west');
+			} else {
+				e.style.backgroundImage = 'url("toggle-rt.gif")';
+				layout.hidePanel('west');			
+			}
+
+		}
+	</script>
+	<style>
+		#header {
+			background: #b5bdc8; /* Old browsers */
+			background: -moz-linear-gradient(top,  #b5bdc8 0%, #828c95 36%, #28343b 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b5bdc8), color-stop(36%,#828c95), color-stop(100%,#28343b)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top,  #b5bdc8 0%,#828c95 36%,#28343b 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top,  #b5bdc8 0%,#828c95 36%,#28343b 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top,  #b5bdc8 0%,#828c95 36%,#28343b 100%); /* IE10+ */
+			background: linear-gradient(to bottom,  #b5bdc8 0%,#828c95 36%,#28343b 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b5bdc8', endColorstr='#28343b',GradientType=0 ); /* IE6-9 */
+			color:white;
+			font-weight:bold;
+		}
+		#header span {
+			margin-left:50%;
+		}
+		.mainWestResizeBar {
+		    background: url("style/toggle-lt.gif") no-repeat scroll 1px 50% transparent;
+		    cursor: col-resize;
+		    height: 100%;
+		    width: 6px;
+			float:left;
+			background-color:white;
+		    border:1px solid black;			
+		}
+	</style>		
+</head>
+<body>
+<div id="container">
+	<div id="header" class="hlayout_north"><span>Header</span></div>
+		<div class="hlayout_center">
+			<div id="west" class="vlayout_west">
+			West.
+			</div>
+			<div class="vlayout_center">
+			Center
+			</div>
+	</div>
+</div> 
+</body>
+</html>
