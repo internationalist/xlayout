@@ -276,7 +276,16 @@ function Xlayout(container, mode, param) {
 	this.dragMonitor = null;
 	this.containetElement = null
 	this.mode = mode;
-	
+	this.addCallBack = function(event, elementA, elementB) {
+		var callBack = this.configParam.getConfig(event, elementA.id);
+		if(callBack) {
+			if(elementB) {
+				callBack.call(this, elementB);
+			} else {
+				callBack.call(this, elementA);				
+			}
+		}
+	}
 
 	if(container=='body') {
 		this.containerElement = document.body;
@@ -704,16 +713,6 @@ function createHBarsBeforeElement(hlayoutPanel, className, text) {
 
 function resizeBarAlreadyPresent(panel, orientation) {
 	var retPanel = null;
-/*	if(panel.previousSibling || panel.nextSibling) {
-		if((panel.previousSibling.className && panel.previousSibling.className==orientation)
-				||(panel.nextSibling.className && panel.nextSibling.className==orientation)) {
-			if(panel.previousSibling) {
-				retPanel = panel.previousSibling;
-			} else {
-				retPanel = panel.nextSibling;
-			}
-		}
-	}*/
 	if(panel.previousSibling) {
 		if(panel.previousSibling.className==orientation) {
 			retPanel = panel.previousSibling;
@@ -863,7 +862,7 @@ function MouseDragMonitor(xlayout) {
 		this.nextNode = getNextDiv(this.target);
 	
 			//if(this.target.className=="vertical") {
-		if(contains(xlayout.v_resizeBars, this.target.className)) {		
+		if(contains(xlayout.v_resizeBars, this.target.className)) {
 				stopDefault(e);				
 				if(xlayout.configParam.getConfig("resizable", prevNode.id)==true
 				 && xlayout.configParam.getConfig("resizable", nextNode.id)==true){					
@@ -918,8 +917,6 @@ function MouseDragMonitor(xlayout) {
 	
 	
 	document.addEventListener("mouseup", function(e){
-
-
 			if(this.flag==1 && contains(xlayout.v_resizeBars, this.target.className)) {
 				this.flag=0;				
 				this.dragme_v.style.display='none';				
@@ -933,6 +930,12 @@ function MouseDragMonitor(xlayout) {
 					collapseSection(this.prevNode, this.nextNode, divSizes);
 					//make the actual size adjustments.
 					xlayout.adjustVerticalPanelSize(this.nextNode, this.prevNode);
+				} else {
+					if(this.prevNode.className=="vlayout_west") {
+						xlayout.addCallBack("resizebarclick", this.prevNode, this.target);
+					} else {
+						xlayout.addCallBack("resizebarclick", this.nextNode, this.target);					
+					}
 				}
 			} else if(this.flag==1 && contains(xlayout.h_resizeBars, this.target.className)) {
 				this.flag=0;				
@@ -945,6 +948,12 @@ function MouseDragMonitor(xlayout) {
 					//collapse the section if height becomes 0
 					collapseSection(this.prevNode, this.nextNode, divSizes);
 					xlayout.adjustHorizontalPanelSize(this.nextNode, this.prevNode);
+				} else {
+					if(this.prevNode.className=="hlayout_north") {
+						xlayout.addCallBack("resizebarclick", this.prevNode, this.target);
+					} else {
+						xlayout.addCallBack("resizebarclick", this.nextNode, this.target);					
+					}
 				}
 			}
 		}, false);
@@ -1164,6 +1173,8 @@ function collapsePanel(id) {
 		siblingHeight = parseSize(sibling.style.height) + parseSize(element.style.height);
 		this.collapseOrShowHorizontalPanels(height,siblingHeight,element,sibling);
 	}
+	//if we are here it means that the collapse is done. Time to invoke the callback.
+	this.addCallBack("onHide", element);
 
 }
 
@@ -1218,6 +1229,9 @@ function expandPanel(id) {
 		}		
 		this.collapseOrShowHorizontalPanels(height,siblingHeight,element,sibling);
 	}
+	
+	//if we are here it means that the expand is done. Time to invoke the callback.
+	this.addCallBack("onShow", element);	
 }
 
 function collapseOrShowHorizontalPanels(next, previous, nextElement, prevElement) {
