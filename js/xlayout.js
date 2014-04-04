@@ -170,7 +170,7 @@ Library.
 
 function ConfigParam() {
 	this.initParam = {
-		default: {
+		defaultopts: {
 	  		northheight:20,
 	  		southheight:10,
 	  		westwidth:25,
@@ -184,40 +184,40 @@ function ConfigParam() {
 		  	}
 	};
 	this.resolve = function(defConfig) {
-		if(defConfig.default) {
-			var temp = defConfig.default;
+		if(defConfig.defaultopts) {
+			var temp = defConfig.defaultopts;
 			if(!temp.northheight) {
-				temp.northheight=this.initParam.default.northheight
+				temp.northheight=this.initParam.defaultopts.northheight
 			}
 			if(!temp.southheight) {
-				temp.southheight=this.initParam.default.southheight;
+				temp.southheight=this.initParam.defaultopts.southheight;
 			}
 			if(!temp.westwidth) {
-				temp.westwidth=this.initParam.default.westwidth;
+				temp.westwidth=this.initParam.defaultopts.westwidth;
 			}
 			if(!temp.eastwidth) {
-				temp.eastwidth=this.initParam.default.eastwidth;
+				temp.eastwidth=this.initParam.defaultopts.eastwidth;
 			}
 			if(temp.resizable==null) {
-				temp.resizable=this.initParam.default.resizable;
+				temp.resizable=this.initParam.defaultopts.resizable;
 			}
 			if(temp.resizebar==null) {
-				temp.resizebar=this.initParam.default.resizebar;
+				temp.resizebar=this.initParam.defaultopts.resizebar;
 			}
 			if(temp.border==null) {
-				temp.border=this.initParam.default.border;
+				temp.border=this.initParam.defaultopts.border;
 			}
 			if(temp.hbarclassname==null) {
-				temp.hbarclassname=this.initParam.default.hbarclassname;
+				temp.hbarclassname=this.initParam.defaultopts.hbarclassname;
 			}
 			if(temp.vbarclassname==null) {
-				temp.vbarclassname=this.initParam.default.vbarclassname;
+				temp.vbarclassname=this.initParam.defaultopts.vbarclassname;
 			}
 			if(temp.lateralmarginfixedlayout==null) {
-				temp.lateralmarginfixedlayout=this.initParam.default.lateralmarginfixedlayout;
+				temp.lateralmarginfixedlayout=this.initParam.defaultopts.lateralmarginfixedlayout;
 			}
 		} else {
-			defConfig.default=this.initParam.default;
+			defConfig.defaultopts=this.initParam.defaultopts;
 		}
 		
 		this.initParam=defConfig;
@@ -231,10 +231,10 @@ function ConfigParam() {
 			if(tempParams[token]!=null) {
 				retValue = tempParams[token];
 			} else {
-				retValue = this.initParam.default[token];
+				retValue = this.initParam.defaultopts[token];
 			}
 		} else {
-			retValue = this.initParam.default[token];
+			retValue = this.initParam.defaultopts[token];
 		}
 		return retValue;
 	}
